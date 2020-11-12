@@ -16692,6 +16692,12 @@ public class NewDiagnosticTestGenerated extends AbstractNewDiagnosticTest {
         }
 
         @Test
+        @TestMetadata("openInExpectInterface.kt")
+        public void testOpenInExpectInterface() throws Exception {
+            runTest("compiler/testData/diagnostics/tests/modifiers/openInExpectInterface.kt");
+        }
+
+        @Test
         @TestMetadata("openInInterface.kt")
         public void testOpenInInterface() throws Exception {
             runTest("compiler/testData/diagnostics/tests/modifiers/openInInterface.kt");
@@ -17195,6 +17201,12 @@ public class NewDiagnosticTestGenerated extends AbstractNewDiagnosticTest {
         @Test
         public void testAllFilesPresentInMultiplatform() throws Exception {
             KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/multiplatform"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+        }
+
+        @Test
+        @TestMetadata("expectInterfaceApplicability.kt")
+        public void testExpectInterfaceApplicability() throws Exception {
+            runTest("compiler/testData/diagnostics/tests/multiplatform/expectInterfaceApplicability.kt");
         }
 
         @Test

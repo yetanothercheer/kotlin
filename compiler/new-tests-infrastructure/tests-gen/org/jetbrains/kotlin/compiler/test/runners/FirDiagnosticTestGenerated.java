@@ -49,6 +49,12 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
     }
 
     @Test
+    @TestMetadata("companionAccessInEnum.kt")
+    public void testCompanionAccessInEnum() throws Exception {
+        runTest("compiler/fir/analysis-tests/testData/resolve/companionAccessInEnum.kt");
+    }
+
+    @Test
     @TestMetadata("companionObjectCall.kt")
     public void testCompanionObjectCall() throws Exception {
         runTest("compiler/fir/analysis-tests/testData/resolve/companionObjectCall.kt");
@@ -202,6 +208,12 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
     @TestMetadata("fib.kt")
     public void testFib() throws Exception {
         runTest("compiler/fir/analysis-tests/testData/resolve/fib.kt");
+    }
+
+    @Test
+    @TestMetadata("flexibleCapturedType.kt")
+    public void testFlexibleCapturedType() throws Exception {
+        runTest("compiler/fir/analysis-tests/testData/resolve/flexibleCapturedType.kt");
     }
 
     @Test
@@ -406,6 +418,12 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
     @TestMetadata("qualifierWithCompanion.kt")
     public void testQualifierWithCompanion() throws Exception {
         runTest("compiler/fir/analysis-tests/testData/resolve/qualifierWithCompanion.kt");
+    }
+
+    @Test
+    @TestMetadata("rawTypeSam.kt")
+    public void testRawTypeSam() throws Exception {
+        runTest("compiler/fir/analysis-tests/testData/resolve/rawTypeSam.kt");
     }
 
     @Test
@@ -2075,6 +2093,40 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
         @TestMetadata("typeDepthForTypeAlias.kt")
         public void testTypeDepthForTypeAlias() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/inference/typeDepthForTypeAlias.kt");
+        }
+    }
+
+    @Nested
+    @TestMetadata("compiler/fir/analysis-tests/testData/resolve/innerClasses")
+    @TestDataPath("$PROJECT_ROOT")
+    public class InnerClasses extends AbstractFirDiagnosticTest {
+        @Test
+        public void testAllFilesPresentInInnerClasses() throws Exception {
+            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/fir/analysis-tests/testData/resolve/innerClasses"), Pattern.compile("^(.*)\\.kts?$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+        }
+
+        @Test
+        @TestMetadata("inner.kt")
+        public void testInner() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/innerClasses/inner.kt");
+        }
+
+        @Test
+        @TestMetadata("innerTypeFromSuperClassInBody.kt")
+        public void testInnerTypeFromSuperClassInBody() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/innerClasses/innerTypeFromSuperClassInBody.kt");
+        }
+
+        @Test
+        @TestMetadata("innerTypes.kt")
+        public void testInnerTypes() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/innerClasses/innerTypes.kt");
+        }
+
+        @Test
+        @TestMetadata("simple.kt")
+        public void testSimple() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/innerClasses/simple.kt");
         }
     }
 
