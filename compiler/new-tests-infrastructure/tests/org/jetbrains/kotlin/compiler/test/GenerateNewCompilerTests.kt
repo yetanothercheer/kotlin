@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.compiler.test
 
 import org.jetbrains.kotlin.compiler.test.runners.AbstractFirDiagnosticTest
+import org.jetbrains.kotlin.compiler.test.runners.AbstractFirOldFrontendDiagnosticsTest
 import org.jetbrains.kotlin.test.junit5Generator.generateNewTestGroupSuite
 import org.jetbrains.kotlin.compiler.test.runners.AbstractNewDiagnosticTest
 
@@ -13,6 +14,10 @@ fun main(args: Array<String>) {
     generateNewTestGroupSuite(args) {
         testGroup("compiler/new-tests-infrastructure/tests-gen", "compiler/testData") {
             testClass<AbstractNewDiagnosticTest> {
+                model("diagnostics/tests", pattern = "^(.*)\\.kts?$", excludedPattern = "^(.+)\\.fir\\.kts?\$")
+            }
+
+            testClass<AbstractFirOldFrontendDiagnosticsTest> {
                 model("diagnostics/tests", pattern = "^(.*)\\.kts?$", excludedPattern = "^(.+)\\.fir\\.kts?\$")
             }
         }
