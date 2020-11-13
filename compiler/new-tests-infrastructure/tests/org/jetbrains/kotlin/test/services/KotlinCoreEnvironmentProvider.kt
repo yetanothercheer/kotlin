@@ -36,13 +36,17 @@ class KotlinCoreEnvironmentProviderImpl(
     override val testRootDisposable: Disposable,
     val configurators: List<EnvironmentConfigurator>
 ) : KotlinCoreEnvironmentProvider() {
+    private val cache: MutableMap<TestModule, KotlinCoreEnvironment> = mutableMapOf()
+
     override fun getKotlinCoreEnvironment(module: TestModule): KotlinCoreEnvironment {
-        return KotlinCoreEnvironment.createForTests(
-            testRootDisposable,
-            createCompilerConfiguration(module),
-            EnvironmentConfigFiles.JVM_CONFIG_FILES
-        ).apply {
-            configurators.forEach { it.configureEnvironment(this, module) }
+        return cache.getOrPut(module) {
+            KotlinCoreEnvironment.createForTests(
+                testRootDisposable,
+                createCompilerConfiguration(module),
+                EnvironmentConfigFiles.JVM_CONFIG_FILES
+            ).apply {
+                configurators.forEach { it.configureEnvironment(this, module) }
+            }
         }
     }
 
