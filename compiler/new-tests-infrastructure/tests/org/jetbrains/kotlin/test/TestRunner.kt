@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.test
 
+import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.TestDataFile
 import org.jetbrains.kotlin.test.model.*
 import org.jetbrains.kotlin.test.services.*
@@ -13,6 +14,14 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
     private val failedAssertions = mutableListOf<AssertionError>()
 
     fun runTest(@TestDataFile testDataFileName: String) {
+        try {
+            runTestImpl(testDataFileName)
+        } finally {
+            Disposer.dispose(testConfiguration.rootDisposable)
+        }
+    }
+
+    private fun runTestImpl(@TestDataFile testDataFileName: String) {
         val services = testConfiguration.testServices
 
         @Suppress("NAME_SHADOWING")
