@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Copyright 2010-2020 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.idea.codeInsight.gradle.MultiplePluginVersionGradleI
 import org.jetbrains.kotlin.idea.codeInsight.gradle.mppImportTestMinVersionForMaster
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.platform.CommonPlatforms
+import org.jetbrains.kotlin.platform.TargetPlatform
 import org.jetbrains.kotlin.platform.js.JsPlatforms
 import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.test.KotlinTestUtils
@@ -24,6 +25,7 @@ import org.junit.Test
 
 //ToDo: Need to remove RUNTIME dependencies when KT-40551 is resolved
 class NewMultiplatformProjectImportingTest : MultiplePluginVersionGradleImportingTestCase() {
+    private fun TargetPlatform.with(other: TargetPlatform) = TargetPlatform(componentPlatforms + other.componentPlatforms)
 
     @Before
     fun saveSdksBeforeTest() {
@@ -43,6 +45,8 @@ class NewMultiplatformProjectImportingTest : MultiplePluginVersionGradleImportin
     @Test
     @PluginTargetVersions(pluginVersion = "1.3.10+", gradleVersionForLatestPlugin = mppImportTestMinVersionForMaster)
     fun testProjectDependency() {
+        val jvmAndJsPlatform = JsPlatforms.defaultJsPlatform.with(JvmPlatforms.jvm16)
+
         configureByFiles()
         importProject()
 
@@ -160,14 +164,14 @@ class NewMultiplatformProjectImportingTest : MultiplePluginVersionGradleImportin
             }
             module("lib")
             module("lib_commonMain") {
-                platform(CommonPlatforms.defaultCommonPlatform)
+                platform(jvmAndJsPlatform)
                 libraryDependency("Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:${gradleKotlinPluginVersion}", DependencyScope.COMPILE)
                 sourceFolder("lib/src/commonMain/kotlin", SourceKotlinRootType)
                 sourceFolder("lib/src/commonMain/resources", ResourceKotlinRootType)
                 inheritProjectOutput()
             }
             module("lib_commonTest") {
-                platform(CommonPlatforms.defaultCommonPlatform)
+                platform(jvmAndJsPlatform)
                 libraryDependency("Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:${gradleKotlinPluginVersion}", DependencyScope.TEST)
                 moduleDependency("lib_commonMain", DependencyScope.TEST)
                 sourceFolder("lib/src/commonTest/kotlin", TestSourceKotlinRootType)
@@ -898,9 +902,11 @@ class NewMultiplatformProjectImportingTest : MultiplePluginVersionGradleImportin
         }
     }
 
+    // Checks that common modules keep common flag even in one-target project.
     @Test
     @PluginTargetVersions(pluginVersion = "1.3.30+", gradleVersionForLatestPlugin = mppImportTestMinVersionForMaster)
-    fun testCommonTestTargetPlatform() {
+    fun testCommonTestOnetargetPlatform() {
+        val jvmAndJsPlatform = JsPlatforms.defaultJsPlatform.with(JvmPlatforms.defaultJvmPlatform)
         configureByFiles()
         importProject(true)
         checkProjectStructure(true, false, false) {
@@ -916,6 +922,37 @@ class NewMultiplatformProjectImportingTest : MultiplePluginVersionGradleImportin
             }
             module("KotlinMPPL.jsTest") {
                 platform(JsPlatforms.defaultJsPlatform)
+            }
+        }
+    }
+
+    // Checks that platform is being assigned depending on existing targets.
+    @Test
+    @PluginTargetVersions(pluginVersion = "1.3.60+", gradleVersionForLatestPlugin = mppImportTestMinVersionForMaster)
+    fun testCommonTestMultitargetPlatform() {
+        val jvmAndJsPlatform = JsPlatforms.defaultJsPlatform.with(JvmPlatforms.defaultJvmPlatform)
+
+        configureByFiles()
+        importProject(true)
+        checkProjectStructure(true, false, false) {
+            module("KotlinMPPL") {}
+            module("KotlinMPPL.commonMain") {
+                platform(CommonPlatforms.defaultCommonPlatform)
+            }
+            module("KotlinMPPL.commonTest") {
+                platform(CommonPlatforms.defaultCommonPlatform)
+            }
+            module("KotlinMPPL.jsMain") {
+                platform(JsPlatforms.defaultJsPlatform)
+            }
+            module("KotlinMPPL.jsTest") {
+                platform(JsPlatforms.defaultJsPlatform)
+            }
+            module("KotlinMPPL.jvmMain") {
+                platform(JvmPlatforms.defaultJvmPlatform)
+            }
+            module("KotlinMPPL.jvmTest") {
+                platform(JvmPlatforms.defaultJvmPlatform)
             }
         }
     }
