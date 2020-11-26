@@ -40,7 +40,8 @@ class Fir2IrResultsConverter(
         frontendResults: ResultingArtifact.Source<FirSourceArtifact>
     ): IrBackendInputInfo {
         require(frontendResults is FirSourceArtifact)
-        val (irModuleFragment, symbolTable, sourceManager, components) = frontendResults.firAnalyzerFacade.convertToIr()
+        val extensions = JvmGeneratorExtensions()
+        val (irModuleFragment, symbolTable, sourceManager, components) = frontendResults.firAnalyzerFacade.convertToIr(extensions)
         val dummyBindingContext = NoScopeRecordCliBindingTrace().bindingContext
 
         val environment = testServices.kotlinCoreEnvironmentProvider.getKotlinCoreEnvironment(module)
@@ -73,7 +74,6 @@ class Fir2IrResultsConverter(
         ).build()
 
         irModuleFragment.irBuiltins.functionFactory = IrFunctionFactory(irModuleFragment.irBuiltins, symbolTable)
-        val extensions = JvmGeneratorExtensions()
         val irProviders = generateTypicalIrProviderList(
             irModuleFragment.descriptor, irModuleFragment.irBuiltins, symbolTable, extensions = extensions
         )

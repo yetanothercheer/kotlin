@@ -164,7 +164,6 @@ class FirDiagnosticsHandler(testServices: TestServices) : FirAnalysisHandler(tes
                 FirDiagnosticFactory1(
                     name,
                     severity,
-                    this
                 )
             )
             is FirLightSourceElement -> FirLightDiagnosticWithParameters1(
@@ -173,8 +172,7 @@ class FirDiagnosticsHandler(testServices: TestServices) : FirAnalysisHandler(tes
                 severity,
                 FirDiagnosticFactory1<FirSourceElement, PsiElement, String>(
                     name,
-                    severity,
-                    this
+                    severity
                 )
             )
         }

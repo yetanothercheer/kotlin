@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.diagnostics.Diagnostic
 import org.jetbrains.kotlin.diagnostics.PositioningStrategy
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDefaultErrorMessages
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDiagnostic
+import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDiagnosticRenderer
 import org.jetbrains.kotlin.fir.psi
 
 object FirMetaInfoUtils {
@@ -29,7 +30,7 @@ class FirDiagnosticCodeMetaInfo(
         val psi = diagnostic.element.psi ?: return@run null
 
         @Suppress("UNCHECKED_CAST")
-        val positioningStrategy = diagnostic.factory.psiDiagnosticFactory.positioningStrategy as PositioningStrategy<PsiElement>
+        val positioningStrategy = diagnostic.factory.positioningStrategy.psiStrategy as PositioningStrategy<PsiElement>
         positioningStrategy.mark(psi).first()
     }
 
@@ -73,7 +74,7 @@ class FirDiagnosticCodeMetaRenderConfiguration(
 
         val diagnostic = codeMetaInfo.diagnostic
 
-        val renderer = FirDefaultErrorMessages.getRendererForDiagnostic(diagnostic)
+        val renderer = FirDefaultErrorMessages.getRendererForDiagnostic(diagnostic) as FirDiagnosticRenderer<FirDiagnostic<*>>
         params.add(renderer.render(diagnostic))
 
         if (renderSeverity)
