@@ -6,7 +6,6 @@
 package org.jetbrains.kotlin.backend.wasm.ir2wasm
 
 import org.jetbrains.kotlin.backend.wasm.WasmBackendContext
-import org.jetbrains.kotlin.wasm.ir.*
 import org.jetbrains.kotlin.backend.wasm.lower.WasmSignature
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.declarations.IrField
@@ -20,7 +19,7 @@ import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.isNothing
 import org.jetbrains.kotlin.ir.util.isFunction
 import org.jetbrains.kotlin.ir.util.parentAsClass
-
+import org.jetbrains.kotlin.wasm.ir.*
 
 class WasmModuleCodegenContextImpl(
     override val backendContext: WasmBackendContext,
@@ -92,8 +91,8 @@ class WasmModuleCodegenContextImpl(
         wasmFragment.globals.define(irField, wasmGlobal)
     }
 
-    override fun defineGcType(irClass: IrClassSymbol, wasmStruct: WasmTypeDeclaration) {
-        wasmFragment.gcTypes.define(irClass, wasmStruct)
+    override fun defineGcType(irClass: IrClassSymbol, wasmType: WasmTypeDeclaration) {
+        wasmFragment.gcTypes.define(irClass, wasmType)
     }
 
     override fun defineRTT(irClass: IrClassSymbol, wasmGlobal: WasmGlobal) {
