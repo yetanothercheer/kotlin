@@ -14085,6 +14085,12 @@ public class NewDiagnosticTestGenerated extends AbstractNewDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("inferringVariableByMaterializeAndUpperBound.kt")
+            public void testInferringVariableByMaterializeAndUpperBound() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/upperBounds/inferringVariableByMaterializeAndUpperBound.kt");
+            }
+
+            @Test
             @TestMetadata("intersectUpperBounds.kt")
             public void testIntersectUpperBounds() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/upperBounds/intersectUpperBounds.kt");
@@ -14755,6 +14761,12 @@ public class NewDiagnosticTestGenerated extends AbstractNewDiagnosticTest {
         @TestMetadata("basicInlineClassDeclarationDisabled.kt")
         public void testBasicInlineClassDeclarationDisabled() throws Exception {
             runTest("compiler/testData/diagnostics/tests/inlineClasses/basicInlineClassDeclarationDisabled.kt");
+        }
+
+        @Test
+        @TestMetadata("changingNullabilityOfOrdinaryClassIsBinaryCompatibleChange.kt")
+        public void testChangingNullabilityOfOrdinaryClassIsBinaryCompatibleChange() throws Exception {
+            runTest("compiler/testData/diagnostics/tests/inlineClasses/changingNullabilityOfOrdinaryClassIsBinaryCompatibleChange.kt");
         }
 
         @Test

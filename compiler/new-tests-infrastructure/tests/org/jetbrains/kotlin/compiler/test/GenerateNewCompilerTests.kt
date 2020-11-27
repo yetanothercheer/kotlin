@@ -7,8 +7,10 @@ package org.jetbrains.kotlin.compiler.test
 
 import org.jetbrains.kotlin.compiler.test.runners.AbstractFirDiagnosticTest
 import org.jetbrains.kotlin.compiler.test.runners.AbstractFirOldFrontendDiagnosticsTest
+import org.jetbrains.kotlin.compiler.test.runners.AbstractNewBlackBoxCodegenTest
 import org.jetbrains.kotlin.test.junit5Generator.generateNewTestGroupSuite
 import org.jetbrains.kotlin.compiler.test.runners.AbstractNewDiagnosticTest
+import org.jetbrains.kotlin.test.TargetBackend
 
 fun main(args: Array<String>) {
     generateNewTestGroupSuite(args) {
@@ -19,6 +21,10 @@ fun main(args: Array<String>) {
 
             testClass<AbstractFirOldFrontendDiagnosticsTest> {
                 model("diagnostics/tests", pattern = "^(.*)\\.kts?$", excludedPattern = "^(.+)\\.fir\\.kts?\$")
+            }
+
+            testClass<AbstractNewBlackBoxCodegenTest> {
+                model("codegen/box", targetBackend = TargetBackend.JVM)
             }
         }
 

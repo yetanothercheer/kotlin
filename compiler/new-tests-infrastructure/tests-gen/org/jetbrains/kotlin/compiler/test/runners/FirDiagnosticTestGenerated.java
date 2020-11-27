@@ -91,6 +91,12 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
     }
 
     @Test
+    @TestMetadata("defaultParametersInheritedToJava.kt")
+    public void testDefaultParametersInheritedToJava() throws Exception {
+        runTest("compiler/fir/analysis-tests/testData/resolve/defaultParametersInheritedToJava.kt");
+    }
+
+    @Test
     @TestMetadata("definitelyNotNullAmbiguity.kt")
     public void testDefinitelyNotNullAmbiguity() throws Exception {
         runTest("compiler/fir/analysis-tests/testData/resolve/definitelyNotNullAmbiguity.kt");
@@ -829,6 +835,12 @@ public class FirDiagnosticTestGenerated extends AbstractFirDiagnosticTest {
         @TestMetadata("invokeWithReceiverAndArgument.kt")
         public void testInvokeWithReceiverAndArgument() throws Exception {
             runTest("compiler/fir/analysis-tests/testData/resolve/callResolution/invokeWithReceiverAndArgument.kt");
+        }
+
+        @Test
+        @TestMetadata("lambdaAsReceiver.kt")
+        public void testLambdaAsReceiver() throws Exception {
+            runTest("compiler/fir/analysis-tests/testData/resolve/callResolution/lambdaAsReceiver.kt");
         }
 
         @Test
