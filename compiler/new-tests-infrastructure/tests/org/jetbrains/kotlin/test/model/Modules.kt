@@ -64,7 +64,7 @@ data class TestModule(
     val name: String,
     val targetPlatform: TargetPlatform,
     val frontendKind: FrontendKind<*>,
-    val targetBackend: BackendKind<*>,
+    val backendKind: BackendKind<*>,
     val files: List<TestFile>,
     val dependencies: List<DependencyDescription>,
     val directives: RegisteredDirectives,

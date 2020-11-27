@@ -88,7 +88,7 @@ class JvmEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfig
         }
         configuration.addJvmClasspathRoot(KotlinTestUtils.getAnnotationsJar())
 
-        val isIr = module.targetBackend == BackendKind.IrBackend
+        val isIr = module.backendKind == BackendKind.IrBackend
         configuration.put(JVMConfigurationKeys.IR, isIr)
 
         module.javaFiles.takeIf { it.isNotEmpty() }?.let { javaFiles ->

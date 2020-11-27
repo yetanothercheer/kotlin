@@ -48,8 +48,8 @@ object ModuleStructureDirectives : SimpleDirectivesContainer() {
         """.trimIndent()
     )
 
-    val targetBackend = stringDirective(
-        name = "TARGET_BACKEND",
+    val targetBackendKind = stringDirective(
+        name = "TARGET_BACKEND_KIND",
         """
             Usage: // TARGET_BACKEND: {Backend}
             Declares backend for analyzing current module 

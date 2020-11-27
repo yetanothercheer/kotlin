@@ -57,7 +57,7 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
                     }
                 }
 
-                val backendKind = module.targetBackend
+                val backendKind = module.backendKind
                 if (!backendKind.shouldRunAnalysis) continue
 
                 val backendInputInfo = testConfiguration.getConverter(frontendKind, backendKind)

@@ -162,7 +162,7 @@ private class ModuleStructureExtractorWorker constructor(
                     "Unknown frontend: $name"
                 }
             }
-            ModuleStructureDirectives.targetBackend -> {
+            ModuleStructureDirectives.targetBackendKind -> {
                 val name = values.singleOrNull() as? String ?: assertions.fail {
                     "Target backend specified incorrectly\nUsage: ${directive.description}"
                 }
@@ -199,7 +199,7 @@ private class ModuleStructureExtractorWorker constructor(
             name = currentModuleName ?: defaultModuleName,
             targetPlatform = currentModuleTargetPlatform ?: defaultsProvider.defaultPlatform,
             frontendKind = currentModuleFrontendKind ?: defaultsProvider.defaultFrontend,
-            targetBackend = currentModuleBackendKind ?: defaultsProvider.defaultBackend,
+            backendKind = currentModuleBackendKind ?: defaultsProvider.defaultBackend,
             files = filesOfCurrentModule,
             dependencies = dependenciesOfCurrentModule,
             directives = moduleDirectives,
