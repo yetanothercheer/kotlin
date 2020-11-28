@@ -5,37 +5,31 @@
 
 package org.jetbrains.kotlin.test.model
 
-import org.jetbrains.kotlin.test.services.ServiceRegistrationData
 import org.jetbrains.kotlin.test.services.TestServices
 
 abstract class FrontendFacade<R : ResultingArtifact.Source<R>>(
     val testServices: TestServices,
-    val frontendKind: FrontendKind<R>
-) {
+    final override val outputKind: FrontendKind<R>
+) : AbstractTestFacade<SourcesArtifact, R>() {
+    final override val inputKind: TestArtifactKind<SourcesArtifact>
+        get() = SourcesKind
+
     abstract fun analyze(module: TestModule): R
 
-    open val additionalServices: List<ServiceRegistrationData>
-        get() = emptyList()
+    final override fun transform(module: TestModule, inputArtifact: SourcesArtifact): R {
+        // TODO: pass sources
+        return analyze(module)
+    }
 }
 
 abstract class Frontend2BackendConverter<R : ResultingArtifact.Source<R>, I : ResultingArtifact.BackendInputInfo<I>>(
     val testServices: TestServices,
-    val frontendKind: FrontendKind<R>,
-    val backendKind: BackendKind<I>
-) {
-    abstract fun convert(module: TestModule, frontendResults: ResultingArtifact.Source<R>): I
-
-    open val additionalServices: List<ServiceRegistrationData>
-        get() = emptyList()
-}
+    final override val inputKind: FrontendKind<R>,
+    final override val outputKind: BackendKind<I>
+) : AbstractTestFacade<R, I>()
 
 abstract class BackendFacade<I : ResultingArtifact.BackendInputInfo<I>, A : ResultingArtifact.Binary<A>>(
     val testServices: TestServices,
-    val backendKind: BackendKind<I>,
-    val artifactKind: ArtifactKind<A>
-) {
-    abstract fun produce(module: TestModule, initialInfo: ResultingArtifact.BackendInputInfo<I>): A
-
-    open val additionalServices: List<ServiceRegistrationData>
-        get() = emptyList()
-}
+    final override val inputKind: BackendKind<I>,
+    final override val outputKind: ArtifactKind<A>
+) : AbstractTestFacade<I, A>()

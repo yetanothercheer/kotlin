@@ -18,13 +18,13 @@ import org.jetbrains.kotlin.test.model.TestModule
 class ClassicJvmBackendFacade(
     testServices: TestServices
 ) : ClassicBackendFacade<ResultingArtifact.Binary.Jvm>(testServices, ArtifactKind.Jvm) {
-    override fun produce(
+    override fun transform(
         module: TestModule,
-        initialInfo: ClassicBackendInputInfo
+        inputArtifact: ClassicBackendInputInfo
     ): ResultingArtifact.Binary.Jvm {
         val environment = testServices.kotlinCoreEnvironmentProvider.getKotlinCoreEnvironment(module)
         val compilerConfiguration = environment.configuration
-        val (psiFiles, bindingContext, moduleDescriptor, project, languageVersionSettings) = initialInfo
+        val (psiFiles, bindingContext, moduleDescriptor, project, languageVersionSettings) = inputArtifact
         // TODO: add configuring classBuilderFactory
         val generationState = GenerationState.Builder(
             project,

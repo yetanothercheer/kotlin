@@ -23,7 +23,7 @@ class CompiledJarManager(val testServices: TestServices) : TestService {
     fun getCompiledJarForModule(module: TestModule): File {
         return jarCache.getOrPut(module) {
             val outputDir = Files.createTempDirectory("module_${module.name}").toFile()
-            val classFileFactory = testServices.dependencyProvider.getBinaryArtifact(module, ArtifactKind.Jvm).classFileFactory
+            val classFileFactory = testServices.dependencyProvider.getArtifact(module, ArtifactKind.Jvm).classFileFactory
             val outputFileCollection = SimpleOutputFileCollection(classFileFactory.currentOutput)
             val messageCollector = testServices.kotlinCoreEnvironmentProvider.getKotlinCoreEnvironment(module).configuration
                 .getNotNull(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY)

@@ -11,10 +11,4 @@ import org.jetbrains.kotlin.test.services.TestServices
 abstract class ClassicBackendFacade<A : ResultingArtifact.Binary<A>>(
     testServices: TestServices,
     artifactKind: ArtifactKind<A>
-) : BackendFacade<ClassicBackendInputInfo, A>(testServices, BackendKind.ClassicBackend, artifactKind) {
-    final override fun produce(module: TestModule, initialInfo: ResultingArtifact.BackendInputInfo<ClassicBackendInputInfo>): A {
-        return produce(module, initialInfo as ClassicBackendInputInfo)
-    }
-
-    abstract fun produce(module: TestModule, initialInfo: ClassicBackendInputInfo): A
-}
+) : BackendFacade<ClassicBackendInputInfo, A>(testServices, BackendKind.ClassicBackend, artifactKind)

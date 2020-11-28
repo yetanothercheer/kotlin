@@ -48,12 +48,11 @@ class ClassicFrontend2IrConverter(
     FrontendKind.ClassicFrontend,
     BackendKind.IrBackend
 ) {
-    override fun convert(
+    override fun transform(
         module: TestModule,
-        frontendResults: ResultingArtifact.Source<ClassicFrontendSourceArtifacts>
+        inputArtifact: ClassicFrontendSourceArtifacts
     ): IrBackendInputInfo {
-        require(frontendResults is ClassicFrontendSourceArtifacts)
-        val (psiFiles, analysisResult, project, languageVersionSettings) = frontendResults
+        val (psiFiles, analysisResult, project, languageVersionSettings) = inputArtifact
 
         val configuration = testServices.kotlinCoreEnvironmentProvider.getCompilerConfiguration(module)
 

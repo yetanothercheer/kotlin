@@ -11,11 +11,4 @@ import org.jetbrains.kotlin.test.services.TestServices
 abstract class IrBackendFacade<A : ResultingArtifact.Binary<A>>(
     testServices: TestServices,
     artifactKind: ArtifactKind<A>
-) : BackendFacade<IrBackendInputInfo, A>(testServices, BackendKind.IrBackend, artifactKind) {
-    override fun produce(module: TestModule, initialInfo: ResultingArtifact.BackendInputInfo<IrBackendInputInfo>): A {
-        @Suppress("UNCHECKED_CAST")
-        return produce(module, initialInfo as IrBackendInputInfo)
-    }
-
-    abstract fun produce(module: TestModule, initialInfo: IrBackendInputInfo): A
-}
+) : BackendFacade<IrBackendInputInfo, A>(testServices, BackendKind.IrBackend, artifactKind)

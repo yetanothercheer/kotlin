@@ -14,11 +14,11 @@ import org.jetbrains.kotlin.test.services.TestServices
 class JvmIrBackendFacade(
     testServices: TestServices
 ) : IrBackendFacade<ResultingArtifact.Binary.Jvm>(testServices, ArtifactKind.Jvm) {
-    override fun produce(
+    override fun transform(
         module: TestModule,
-        initialInfo: IrBackendInputInfo
+        inputArtifact: IrBackendInputInfo
     ): ResultingArtifact.Binary.Jvm {
-        val (state, irModuleFragment, symbolTable, sourceManager, phaseConfig, irProviders, extensions, serializerFactory) = initialInfo
+        val (state, irModuleFragment, symbolTable, sourceManager, phaseConfig, irProviders, extensions, serializerFactory) = inputArtifact
 
         val codegenFactory = state.codegenFactory as JvmIrCodegenFactory
         codegenFactory.doGenerateFilesInternal(

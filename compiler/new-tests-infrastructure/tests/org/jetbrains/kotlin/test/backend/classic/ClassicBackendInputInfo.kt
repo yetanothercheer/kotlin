@@ -21,6 +21,6 @@ data class ClassicBackendInputInfo(
     val project: Project,
     val languageVersionSettings: LanguageVersionSettings
 ) : ResultingArtifact.BackendInputInfo<ClassicBackendInputInfo>() {
-    override val backendKind: BackendKind.ClassicBackend
+    override val kind: BackendKind.ClassicBackend
         get() = BackendKind.ClassicBackend
 }

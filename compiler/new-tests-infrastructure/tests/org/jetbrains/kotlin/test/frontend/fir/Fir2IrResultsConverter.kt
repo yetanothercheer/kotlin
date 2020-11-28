@@ -35,13 +35,12 @@ class Fir2IrResultsConverter(
     FrontendKind.FIR,
     BackendKind.IrBackend
 ) {
-    override fun convert(
+    override fun transform(
         module: TestModule,
-        frontendResults: ResultingArtifact.Source<FirSourceArtifact>
+        inputArtifact: FirSourceArtifact
     ): IrBackendInputInfo {
-        require(frontendResults is FirSourceArtifact)
         val extensions = JvmGeneratorExtensions()
-        val (irModuleFragment, symbolTable, sourceManager, components) = frontendResults.firAnalyzerFacade.convertToIr(extensions)
+        val (irModuleFragment, symbolTable, sourceManager, components) = inputArtifact.firAnalyzerFacade.convertToIr(extensions)
         val dummyBindingContext = NoScopeRecordCliBindingTrace().bindingContext
 
         val environment = testServices.kotlinCoreEnvironmentProvider.getKotlinCoreEnvironment(module)
@@ -51,7 +50,7 @@ class Fir2IrResultsConverter(
         val codegenFactory = JvmIrCodegenFactory(phaseConfig)
 
         // TODO: handle fir from light tree
-        val ktFiles = frontendResults.firFiles.values.mapNotNull { it.psi as KtFile? }
+        val ktFiles = inputArtifact.firFiles.values.mapNotNull { it.psi as KtFile? }
 
         // Create and initialize the module and its dependencies
         val project = environment.project
@@ -87,7 +86,7 @@ class Fir2IrResultsConverter(
             irProviders,
             extensions,
         ) { context, irClass, _, serializationBindings, parent ->
-            FirMetadataSerializer(frontendResults.session, context, irClass, serializationBindings, parent)
+            FirMetadataSerializer(inputArtifact.session, context, irClass, serializationBindings, parent)
         }
     }
 }

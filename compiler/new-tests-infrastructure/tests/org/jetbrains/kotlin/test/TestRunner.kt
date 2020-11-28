@@ -45,12 +45,14 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
         var failedException: Throwable? = null
         try {
             for (module in modules) {
+                val sourcesArtifact = SourcesArtifact()
+
                 val frontendKind = module.frontendKind
                 if (!frontendKind.shouldRunAnalysis) continue
 
-                val frontendArtifacts: ResultingArtifact.Source<*> = testConfiguration.getFrontendFacade(frontendKind)
-                    .analyze(module).also { dependencyProvider.registerSourceArtifact(module, it) }
-                val frontendHandlers: List<FrontendResultsHandler<*>> = testConfiguration.getFrontendHandlers(frontendKind)
+                val frontendArtifacts: ResultingArtifact.Source<*> = testConfiguration.getFacade(SourcesKind, frontendKind)
+                    .transform(module, sourcesArtifact).also { dependencyProvider.registerArtifact(module, it) }
+                val frontendHandlers: List<AnalysisHandler<*>> = testConfiguration.getHandlers(frontendKind)
                 for (frontendHandler in frontendHandlers) {
                     withAssertionCatching {
                         frontendHandler.hackyProcess(module, frontendArtifacts)
@@ -60,22 +62,22 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
                 val backendKind = module.backendKind
                 if (!backendKind.shouldRunAnalysis) continue
 
-                val backendInputInfo = testConfiguration.getConverter(frontendKind, backendKind)
-                    .hackyConvert(module, frontendArtifacts).also { dependencyProvider.registerBackendInfo(module, it) }
+                val backendInputInfo = testConfiguration.getFacade(frontendKind, backendKind)
+                    .hackyTransform(module, frontendArtifacts).also { dependencyProvider.registerArtifact(module, it) }
 
-                val backendHandlers: List<BackendInitialInfoHandler<*>> = testConfiguration.getBackendHandlers(backendKind)
+                val backendHandlers: List<AnalysisHandler<*>> = testConfiguration.getHandlers(backendKind)
                 for (backendHandler in backendHandlers) {
                     withAssertionCatching { backendHandler.hackyProcess(module, backendInputInfo) }
                 }
 
                 for (artifactKind in moduleStructure.getTargetArtifactKinds(module)) {
                     if (!artifactKind.shouldRunAnalysis) continue
-                    val binaryArtifact = testConfiguration.getBackendFacade(backendKind, artifactKind)
-                        .hackyProduce(module, backendInputInfo).also {
-                            dependencyProvider.registerBinaryArtifact(module, it)
+                    val binaryArtifact = testConfiguration.getFacade(backendKind, artifactKind)
+                        .hackyTransform(module, backendInputInfo).also {
+                            dependencyProvider.registerArtifact(module, it)
                         }
 
-                    val binaryHandlers: List<ArtifactsResultsHandler<*>> = testConfiguration.getArtifactHandlers(artifactKind)
+                    val binaryHandlers: List<AnalysisHandler<*>> = testConfiguration.getHandlers(artifactKind)
                     for (binaryHandler in binaryHandlers) {
                         withAssertionCatching { binaryHandler.hackyProcess(module, binaryArtifact) }
                     }
@@ -84,14 +86,8 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
         } catch (e: Throwable) {
             failedException = e
         }
-        for (frontendHandler in testConfiguration.getAllFrontendHandlers()) {
-            withAssertionCatching { frontendHandler.processAfterAllModules() }
-        }
-        for (backendHandler in testConfiguration.getAllBackendHandlers()) {
-            withAssertionCatching { backendHandler.processAfterAllModules() }
-        }
-        for (artifactHandler in testConfiguration.getAllArtifactHandlers()) {
-            withAssertionCatching { artifactHandler.processAfterAllModules() }
+        for (handler in testConfiguration.getAllHandlers()) {
+            withAssertionCatching { handler.processAfterAllModules() }
         }
         withAssertionCatching {
             globalMetadataInfoHandler.compareAllMetaDataInfos()
@@ -126,49 +122,28 @@ class TestRunner(private val testConfiguration: TestConfiguration) {
  *   to types with Empty artifacts to make it compile. Since unsafe cast has no effort at runtime, it's safe to use it
  */
 
-private fun FrontendResultsHandler<*>.hackyProcess(module: TestModule, artifact: ResultingArtifact.Source<*>) {
+private fun AnalysisHandler<*>.hackyProcess(module: TestModule, artifact: ResultingArtifact<*>) {
     @Suppress("UNCHECKED_CAST")
-    (this as FrontendResultsHandler<ResultingArtifact.Source.Empty>).processModule(
-        module,
-        artifact as ResultingArtifact<ResultingArtifact.Source.Empty>
-    )
+    (this as AnalysisHandler<SourcesArtifact>).processModule(module, artifact as ResultingArtifact<SourcesArtifact>)
 }
 
-private fun BackendInitialInfoHandler<*>.hackyProcess(module: TestModule, artifact: ResultingArtifact.BackendInputInfo<*>) {
+private fun <A : ResultingArtifact<A>> AnalysisHandler<A>.processModule(module: TestModule, artifact: ResultingArtifact<A>) {
     @Suppress("UNCHECKED_CAST")
-    (this as BackendInitialInfoHandler<ResultingArtifact.BackendInputInfo.Empty>).processModule(
-        module,
-        artifact as ResultingArtifact<ResultingArtifact.BackendInputInfo.Empty>
-    )
+    processModule(module, artifact as A)
 }
 
-private fun ArtifactsResultsHandler<*>.hackyProcess(module: TestModule, artifact: ResultingArtifact.Binary<*>) {
-    @Suppress("UNCHECKED_CAST")
-    (this as ArtifactsResultsHandler<ResultingArtifact.Binary.Empty>).processModule(
-        module,
-        artifact as ResultingArtifact<ResultingArtifact.Binary.Empty>
-    )
-}
-
-private fun Frontend2BackendConverter<*, *>.hackyConvert(
+private fun AbstractTestFacade<*, *>.hackyTransform(
     module: TestModule,
-    artifact: ResultingArtifact.Source<*>
-): ResultingArtifact.BackendInputInfo<*> {
+    artifact: ResultingArtifact<*>
+): ResultingArtifact<*> {
     @Suppress("UNCHECKED_CAST")
-    return (this as Frontend2BackendConverter<ResultingArtifact.Source.Empty, ResultingArtifact.BackendInputInfo.Empty>).convert(
-        module,
-        artifact as ResultingArtifact.Source<ResultingArtifact.Source.Empty>
-    )
+    return (this as AbstractTestFacade<SourcesArtifact, SourcesArtifact>).transform(module, artifact as ResultingArtifact<SourcesArtifact>)
 }
 
-private fun BackendFacade<*, *>.hackyProduce(
+private fun <I : ResultingArtifact<I>, O : ResultingArtifact<O>> AbstractTestFacade<I, O>.transform(
     module: TestModule,
-    initialInfo: ResultingArtifact.BackendInputInfo<*>
-): ResultingArtifact.Binary<*> {
+    inputArtifact: ResultingArtifact<I>
+): O {
     @Suppress("UNCHECKED_CAST")
-    return (this as BackendFacade<ResultingArtifact.BackendInputInfo.Empty, ResultingArtifact.Binary.Empty>).produce(
-        module,
-        initialInfo as ResultingArtifact.BackendInputInfo<ResultingArtifact.BackendInputInfo.Empty>
-    )
+    return transform(module, inputArtifact as I)
 }
-

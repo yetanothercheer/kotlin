@@ -5,4 +5,11 @@
 
 package org.jetbrains.kotlin.test.model
 
-interface Renderable
+abstract class TestArtifactKind<R : ResultingArtifact<R>>(private val representation: String) {
+    open val shouldRunAnalysis: Boolean
+        get() = true
+
+    override fun toString(): String {
+        return representation
+    }
+}

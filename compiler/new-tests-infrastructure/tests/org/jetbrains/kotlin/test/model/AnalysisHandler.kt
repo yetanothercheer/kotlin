@@ -24,52 +24,36 @@ sealed class AnalysisHandler<A : ResultingArtifact<A>>(val testServices: TestSer
     open val additionalServices: List<ServiceRegistrationData>
         get() = emptyList()
 
-    abstract fun processModule(module: TestModule, info: ResultingArtifact<A>)
+    abstract val artifactKind: TestArtifactKind<A>
+
+    abstract fun processModule(module: TestModule, info: A)
 
     abstract fun processAfterAllModules()
 }
 
 abstract class FrontendResultsHandler<R : ResultingArtifact.Source<R>>(
     testServices: TestServices,
-    val frontendKind: FrontendKind<R>
+    override val artifactKind: FrontendKind<R>
 ) : AnalysisHandler<R>(testServices)
 
 abstract class BackendInitialInfoHandler<I : ResultingArtifact.BackendInputInfo<I>>(
     testServices: TestServices,
-    val backendKind: BackendKind<I>
+    override val artifactKind: BackendKind<I>
 ) : AnalysisHandler<I>(testServices)
 
 abstract class ArtifactsResultsHandler<A : ResultingArtifact.Binary<A>>(
     testServices: TestServices,
-    val artifactKind: ArtifactKind<A>
+    override val artifactKind: ArtifactKind<A>
 ) : AnalysisHandler<A>(testServices)
 
 abstract class JvmBinaryArtifactsResultsHandler(
     testServices: TestServices
-) : ArtifactsResultsHandler<ResultingArtifact.Binary.Jvm>(testServices, ArtifactKind.Jvm) {
-    final override fun processModule(module: TestModule, info: ResultingArtifact<ResultingArtifact.Binary.Jvm>) {
-        processModule(module, info as ResultingArtifact.Binary.Jvm)
-    }
-
-    abstract fun processModule(module: TestModule, info: ResultingArtifact.Binary.Jvm)
-}
+) : ArtifactsResultsHandler<ResultingArtifact.Binary.Jvm>(testServices, ArtifactKind.Jvm)
 
 abstract class JsBinaryArtifactsResultsHandler(
     testServices: TestServices
-) : ArtifactsResultsHandler<ResultingArtifact.Binary.Js>(testServices, ArtifactKind.Js) {
-    final override fun processModule(module: TestModule, info: ResultingArtifact<ResultingArtifact.Binary.Js>) {
-        processModule(module, info as ResultingArtifact.Binary.Js)
-    }
-
-    abstract fun processModule(module: TestModule, info: ResultingArtifact.Binary.Js)
-}
+) : ArtifactsResultsHandler<ResultingArtifact.Binary.Js>(testServices, ArtifactKind.Js)
 
 abstract class NativeBinaryArtifactsResultsHandler(
     testServices: TestServices
-) : ArtifactsResultsHandler<ResultingArtifact.Binary.Native>(testServices, ArtifactKind.Native) {
-    final override fun processModule(module: TestModule, info: ResultingArtifact<ResultingArtifact.Binary.Native>) {
-        processModule(module, info as ResultingArtifact.Binary.Native)
-    }
-
-    abstract fun processModule(module: TestModule, info: ResultingArtifact.Binary.Native)
-}
+) : ArtifactsResultsHandler<ResultingArtifact.Binary.Native>(testServices, ArtifactKind.Native)

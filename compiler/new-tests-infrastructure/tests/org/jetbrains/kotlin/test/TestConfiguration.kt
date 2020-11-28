@@ -42,23 +42,13 @@ abstract class TestConfiguration {
 
     abstract val metaTestConfigurators: List<MetaTestConfigurator>
 
-    abstract fun <R : ResultingArtifact.Source<R>> getFrontendFacade(frontendKind: FrontendKind<R>): FrontendFacade<R>
+    abstract fun <I : ResultingArtifact<I>, O : ResultingArtifact<O>> getFacade(
+        inputKind: TestArtifactKind<I>,
+        outputKind: TestArtifactKind<O>
+    ): AbstractTestFacade<I, O>
 
-    abstract fun <R : ResultingArtifact.Source<R>, I : ResultingArtifact.BackendInputInfo<I>> getConverter(
-        frontendKind: FrontendKind<R>,
-        backendKind: BackendKind<I>
-    ): Frontend2BackendConverter<R, I>
+    abstract fun <A : ResultingArtifact<A>> getHandlers(artifactKind: TestArtifactKind<A>): List<AnalysisHandler<A>>
 
-    abstract fun <I : ResultingArtifact.BackendInputInfo<I>, A : ResultingArtifact.Binary<A>> getBackendFacade(
-        backendKind: BackendKind<I>,
-        artifactKind: ArtifactKind<A>
-    ): BackendFacade<I, A>
-
-    abstract fun <R : ResultingArtifact.Source<R>> getFrontendHandlers(frontendKind: FrontendKind<R>): List<FrontendResultsHandler<R>>
-    abstract fun <I : ResultingArtifact.BackendInputInfo<I>> getBackendHandlers(backendKind: BackendKind<I>): List<BackendInitialInfoHandler<I>>
-    abstract fun <A : ResultingArtifact.Binary<A>> getArtifactHandlers(artifactKind: ArtifactKind<A>): List<ArtifactsResultsHandler<A>>
-
-    abstract fun getAllFrontendHandlers(): List<FrontendResultsHandler<*>>
-    abstract fun getAllBackendHandlers(): List<BackendInitialInfoHandler<*>>
-    abstract fun getAllArtifactHandlers(): List<ArtifactsResultsHandler<*>>
+    abstract fun getAllHandlers(): List<AnalysisHandler<*>>
 }
+

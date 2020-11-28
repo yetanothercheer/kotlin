@@ -17,7 +17,7 @@ data class FirSourceArtifact(
     val allFirFiles: Map<TestFile, FirFile>,
     val firAnalyzerFacade: FirAnalyzerFacade
 ) : ResultingArtifact.Source<FirSourceArtifact>() {
-    override val frontendKind: FrontendKind.FIR
+    override val kind: FrontendKind.FIR
         get() = FrontendKind.FIR
 
     val firFiles: Map<TestFile, FirFile> = allFirFiles.filterKeys { !it.isAdditional }

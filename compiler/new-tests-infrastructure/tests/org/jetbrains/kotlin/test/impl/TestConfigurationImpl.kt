@@ -20,13 +20,9 @@ class TestConfigurationImpl(
     defaultsProvider: DefaultsProvider,
     assertions: Assertions,
 
-    frontendFacades: List<Constructor<FrontendFacade<*>>>,
-    frontend2BackendConverters: List<Constructor<Frontend2BackendConverter<*, *>>>,
-    backendFacades: List<Constructor<BackendFacade<*, *>>>,
+    facades: List<Constructor<AbstractTestFacade<*, *>>>,
 
-    frontendHandlers: List<Constructor<FrontendResultsHandler<*>>>,
-    backendHandlers: List<Constructor<BackendInitialInfoHandler<*>>>,
-    artifactsHandlers: List<Constructor<ArtifactsResultsHandler<*>>>,
+    analysisHandlers: List<Constructor<AnalysisHandler<*>>>,
 
     sourcePreprocessors: List<Constructor<SourceFilePreprocessor>>,
     additionalMetaInfoProcessors: List<Constructor<AdditionalMetaInfoProcessor>>,
@@ -96,43 +92,19 @@ class TestConfigurationImpl(
         }
     }
 
-    private val frontendFacades: Map<FrontendKind<*>, FrontendFacade<*>> =
-        frontendFacades
+    private val facades: Map<TestArtifactKind<*>, Map<TestArtifactKind<*>, AbstractTestFacade<*, *>>> =
+        facades
             .map { it.invoke(testServices) }
-            .groupBy { it.frontendKind }
-            .mapValues { it.value.singleOrNull() ?: manyFacadesError("frontend facades", "source -> ${it.key}") }
-
-    private val frontend2BackendConverters: Map<FrontendKind<*>, Map<BackendKind<*>, Frontend2BackendConverter<*, *>>> =
-        frontend2BackendConverters
-            .map { it.invoke(testServices) }
-            .groupBy { it.frontendKind }
+            .groupBy { it.inputKind }
             .mapValues { (frontendKind, converters) ->
-                converters.groupBy { it.backendKind }.mapValues {
+                converters.groupBy { it.outputKind }.mapValues {
                     it.value.singleOrNull() ?: manyFacadesError("converters", "$frontendKind -> ${it.key}")
                 }
             }
 
-    private val backendFacades: Map<BackendKind<*>, Map<ArtifactKind<*>, BackendFacade<*, *>>> = backendFacades
-        .map { it.invoke(testServices) }
-        .groupBy { it.backendKind }
-        .mapValues { (backendKind, facades) ->
-            facades.groupBy { it.artifactKind }.mapValues {
-                it.value.singleOrNull() ?: manyFacadesError("backend facades", "$backendKind -> ${it.key}")
-            }
-        }
 
-    private val frontendHandlers: Map<FrontendKind<*>, List<FrontendResultsHandler<*>>> =
-        frontendHandlers.map { it.invoke(testServices).also(this::registerDirectivesAndServices) }
-            .groupBy { it.frontendKind }
-            .withDefault { emptyList() }
-
-    private val backendHandlers: Map<BackendKind<*>, List<BackendInitialInfoHandler<*>>> =
-        backendHandlers.map { it.invoke(testServices).also(this::registerDirectivesAndServices) }
-            .groupBy { it.backendKind }
-            .withDefault { emptyList() }
-
-    private val artifactsHandlers: Map<ArtifactKind<*>, List<ArtifactsResultsHandler<*>>> =
-        artifactsHandlers.map { it.invoke(testServices).also(this::registerDirectivesAndServices) }
+    private val analysisHandlers: Map<TestArtifactKind<*>, List<AnalysisHandler<*>>> =
+        analysisHandlers.map { it.invoke(testServices).also(this::registerDirectivesAndServices) }
             .groupBy { it.artifactKind }
             .withDefault { emptyList() }
 
@@ -147,62 +119,29 @@ class TestConfigurationImpl(
 
     init {
         testServices.apply {
-            this@TestConfigurationImpl.frontendFacades.values.forEach { register(it.additionalServices) }
-            this@TestConfigurationImpl.frontend2BackendConverters.values.forEach { it.values.forEach { register(it.additionalServices) } }
-            this@TestConfigurationImpl.backendFacades.values.forEach { it.values.forEach { register(it.additionalServices) } }
+            this@TestConfigurationImpl.facades.values.forEach { it.values.forEach { facade -> register(facade.additionalServices) } }
         }
     }
 
-    override fun <R : ResultingArtifact.Source<R>> getFrontendFacade(frontendKind: FrontendKind<R>): FrontendFacade<R> {
+    override fun <I : ResultingArtifact<I>, O : ResultingArtifact<O>> getFacade(
+        inputKind: TestArtifactKind<I>,
+        outputKind: TestArtifactKind<O>
+    ): AbstractTestFacade<I, O> {
         @Suppress("UNCHECKED_CAST")
-        return frontendFacades[frontendKind] as FrontendFacade<R>? ?: facadeNotFoundError("Source", frontendKind)
-    }
-
-    override fun <R : ResultingArtifact.Source<R>, I : ResultingArtifact.BackendInputInfo<I>> getConverter(
-        frontendKind: FrontendKind<R>,
-        backendKind: BackendKind<I>
-    ): Frontend2BackendConverter<R, I> {
-        @Suppress("UNCHECKED_CAST")
-        return frontend2BackendConverters[frontendKind]?.get(backendKind) as Frontend2BackendConverter<R, I>?
-            ?: facadeNotFoundError(frontendKind, backendKind)
-    }
-
-    override fun <I : ResultingArtifact.BackendInputInfo<I>, A : ResultingArtifact.Binary<A>> getBackendFacade(
-        backendKind: BackendKind<I>,
-        artifactKind: ArtifactKind<A>
-    ): BackendFacade<I, A> {
-        @Suppress("UNCHECKED_CAST")
-        return backendFacades[backendKind]?.get(artifactKind) as BackendFacade<I, A>? ?: facadeNotFoundError(backendKind, artifactKind)
+        return facades[inputKind]?.get(outputKind) as AbstractTestFacade<I, O>?
+            ?: facadeNotFoundError(inputKind, outputKind)
     }
 
     private fun facadeNotFoundError(from: Any, to: Any): Nothing {
         error("Facade for converting '$from' to '$to' not found")
     }
 
-    override fun <R : ResultingArtifact.Source<R>> getFrontendHandlers(frontendKind: FrontendKind<R>): List<FrontendResultsHandler<R>> {
+    override fun <A : ResultingArtifact<A>> getHandlers(artifactKind: TestArtifactKind<A>): List<AnalysisHandler<A>> {
         @Suppress("UNCHECKED_CAST")
-        return frontendHandlers.getValue(frontendKind) as List<FrontendResultsHandler<R>>
+        return analysisHandlers.getValue(artifactKind) as List<AnalysisHandler<A>>
     }
 
-    override fun <I : ResultingArtifact.BackendInputInfo<I>> getBackendHandlers(backendKind: BackendKind<I>): List<BackendInitialInfoHandler<I>> {
-        @Suppress("UNCHECKED_CAST")
-        return backendHandlers.getValue(backendKind) as List<BackendInitialInfoHandler<I>>
-    }
-
-    override fun <A : ResultingArtifact.Binary<A>> getArtifactHandlers(artifactKind: ArtifactKind<A>): List<ArtifactsResultsHandler<A>> {
-        @Suppress("UNCHECKED_CAST")
-        return artifactsHandlers.getValue(artifactKind) as List<ArtifactsResultsHandler<A>>
-    }
-
-    override fun getAllFrontendHandlers(): List<FrontendResultsHandler<*>> {
-        return frontendHandlers.values.flatten()
-    }
-
-    override fun getAllBackendHandlers(): List<BackendInitialInfoHandler<*>> {
-        return backendHandlers.values.flatten()
-    }
-
-    override fun getAllArtifactHandlers(): List<ArtifactsResultsHandler<*>> {
-        return artifactsHandlers.values.flatten()
+    override fun getAllHandlers(): List<AnalysisHandler<*>> {
+        return analysisHandlers.values.flatten()
     }
 }

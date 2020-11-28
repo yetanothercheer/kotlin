@@ -18,13 +18,9 @@ class TestConfigurationBuilder {
     lateinit var defaultsProvider: DefaultsProvider
     lateinit var assertions: Assertions
 
-    private val frontendFacades: MutableList<Constructor<FrontendFacade<*>>> = mutableListOf()
-    private val frontend2BackendConverters: MutableList<Constructor<Frontend2BackendConverter<*, *>>> = mutableListOf()
-    private val backendFacades: MutableList<Constructor<BackendFacade<*, *>>> = mutableListOf()
+    private val facades: MutableList<Constructor<AbstractTestFacade<*, *>>> = mutableListOf()
 
-    private val frontendHandlers: MutableList<Constructor<FrontendResultsHandler<*>>> = mutableListOf()
-    private val backendHandlers: MutableList<Constructor<BackendInitialInfoHandler<*>>> = mutableListOf()
-    private val artifactsHandlers: MutableList<Constructor<ArtifactsResultsHandler<*>>> = mutableListOf()
+    private val handlers: MutableList<Constructor<AnalysisHandler<*>>> = mutableListOf()
 
     private val sourcePreprocessors: MutableList<Constructor<SourceFilePreprocessor>> = mutableListOf()
     private val additionalMetaInfoProcessors: MutableList<Constructor<AdditionalMetaInfoProcessor>> = mutableListOf()
@@ -42,27 +38,27 @@ class TestConfigurationBuilder {
     }
 
     fun useFrontendFacades(vararg constructor: Constructor<FrontendFacade<*>>) {
-        frontendFacades += constructor
+        facades += constructor
     }
 
     fun useBackendFacades(vararg constructor: Constructor<BackendFacade<*, *>>) {
-        backendFacades += constructor
+        facades += constructor
     }
 
     fun useFrontend2BackendConverters(vararg constructor: Constructor<Frontend2BackendConverter<*, *>>) {
-        frontend2BackendConverters += constructor
+        facades += constructor
     }
 
     fun useFrontendHandlers(vararg constructor: Constructor<FrontendResultsHandler<*>>) {
-        frontendHandlers += constructor
+        handlers += constructor
     }
 
     fun useBackendHandlers(vararg constructor: Constructor<BackendInitialInfoHandler<*>>) {
-        backendHandlers += constructor
+        handlers += constructor
     }
 
     fun useArtifactsHandlers(vararg constructor: Constructor<ArtifactsResultsHandler<*>>) {
-        artifactsHandlers += constructor
+        handlers += constructor
     }
 
     fun useSourcePreprocessor(vararg preprocessors: Constructor<SourceFilePreprocessor>) {
@@ -97,12 +93,8 @@ class TestConfigurationBuilder {
         return TestConfigurationImpl(
             defaultsProvider,
             assertions,
-            frontendFacades,
-            frontend2BackendConverters,
-            backendFacades,
-            frontendHandlers,
-            backendHandlers,
-            artifactsHandlers,
+            facades,
+            handlers,
             sourcePreprocessors,
             additionalMetaInfoProcessors,
             environmentConfigurators,

@@ -27,6 +27,6 @@ data class IrBackendInputInfo(
     val extensions: JvmGeneratorExtensions,
     val serializerFactory: MetadataSerializerFactory
 ) : ResultingArtifact.BackendInputInfo<IrBackendInputInfo>() {
-    override val backendKind: BackendKind.IrBackend
+    override val kind: BackendKind.IrBackend
         get() = BackendKind.IrBackend
 }
