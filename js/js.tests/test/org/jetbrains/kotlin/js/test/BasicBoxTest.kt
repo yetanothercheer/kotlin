@@ -138,8 +138,7 @@ abstract class BasicBoxTest(
                 file.name,
                 fileContent,
                 testFactory,
-                true,
-                coroutinesPackage
+                true
             )
             val modules = inputFiles
                 .map { it.module }.distinct()
