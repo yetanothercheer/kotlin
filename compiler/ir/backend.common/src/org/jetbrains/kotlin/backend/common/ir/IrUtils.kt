@@ -237,7 +237,7 @@ fun IrAnnotationContainer.copyAnnotations(): List<IrConstructorCall> {
     return annotations.map { it.deepCopyWithSymbols(this as? IrDeclarationParent) }
 }
 
-fun IrAnnotationContainer.copyAnnotations(filter: IrConstructorCall.() -> Boolean): List<IrConstructorCall> {
+fun IrAnnotationContainer.copyAnnotationsWhen(filter: IrConstructorCall.() -> Boolean): List<IrConstructorCall> {
     return annotations.mapNotNull { if (it.filter()) it.deepCopyWithSymbols(this as? IrDeclarationParent) else null }
 }
 

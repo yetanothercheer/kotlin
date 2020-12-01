@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.ir.backend.js.lower
 
 import org.jetbrains.kotlin.backend.common.BodyLoweringPass
 import org.jetbrains.kotlin.backend.common.deepCopyWithVariables
-import org.jetbrains.kotlin.backend.common.ir.copyAnnotations
+import org.jetbrains.kotlin.backend.common.ir.copyAnnotationsWhen
 import org.jetbrains.kotlin.backend.common.ir.isOverridableOrOverrides
 import org.jetbrains.kotlin.backend.common.lower.DefaultArgumentStubGenerator
 import org.jetbrains.kotlin.backend.common.lower.DEFAULT_DISPATCH_CALL
@@ -32,7 +32,7 @@ class JsDefaultArgumentStubGenerator(override val context: JsIrBackendContext) :
 
     override fun needSpecialDispatch(irFunction: IrSimpleFunction) = irFunction.isOverridableOrOverrides
 
-    override fun IrFunction.resolveAnnotations(): List<IrConstructorCall> = copyAnnotations {
+    override fun IrFunction.resolveAnnotations(): List<IrConstructorCall> = copyAnnotationsWhen {
         !(isAnnotation(JsAnnotations.jsExportFqn) || isAnnotation(JsAnnotations.jsNameFqn))
     }
 
