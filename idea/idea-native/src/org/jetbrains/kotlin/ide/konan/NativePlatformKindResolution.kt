@@ -112,8 +112,7 @@ class NativePlatformKindResolution : IdePlatformKindResolution {
 
         val languageVersionSettings = IDELanguageSettingsProvider.getLanguageVersionSettings(
             stdlibInfo,
-            project,
-            isReleaseCoroutines = false
+            project
         )
 
         val stdlibPackageFragmentProvider = createKlibPackageFragmentProvider(
