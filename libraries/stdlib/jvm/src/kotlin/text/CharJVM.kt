@@ -8,6 +8,8 @@
 
 package kotlin.text
 
+import java.util.*
+
 /**
  * Returns `true` if this character (Unicode code point) is defined in Unicode.
  */
@@ -112,6 +114,18 @@ public actual inline fun Char.uppercaseChar(): Char = Character.toUpperCase(this
 public actual inline fun Char.uppercase(): String = toString().uppercase()
 
 /**
+ * Converts this character to upper case using Unicode mapping rules of the specified [locale].
+ *
+ * If this character has no mapping equivalent, a [String] equal to [Char.toString] is returned.
+ *
+ * @sample samples.text.Chars.uppercase
+ */
+@SinceKotlin("1.4")
+@ExperimentalStdlibApi
+@kotlin.internal.InlineOnly
+public fun Char.uppercase(locale: Locale): String = toString().uppercase(locale)
+
+/**
  * Converts this character to lower case using Unicode mapping rules of the invariant locale.
  *
  * This function performs one-to-one character mapping using case mapping information from the UnicodeData file,
@@ -136,6 +150,18 @@ public actual inline fun Char.lowercaseChar(): Char = Character.toLowerCase(this
 @ExperimentalStdlibApi
 @kotlin.internal.InlineOnly
 public actual inline fun Char.lowercase(): String = toString().lowercase()
+
+/**
+ * Converts this character to lower case using Unicode mapping rules of the specified [locale].
+ *
+ * If this character has no mapping equivalent, a [String] equal to [Char.toString] is returned.
+ *
+ * @sample samples.text.Chars.lowercase
+ */
+@SinceKotlin("1.4")
+@ExperimentalStdlibApi
+@kotlin.internal.InlineOnly
+public fun Char.lowercase(locale: Locale): String = toString().lowercase(locale)
 
 /**
  * Returns `true` if this character is a titlecase character.
@@ -179,6 +205,20 @@ public inline fun Char.titlecaseChar(): Char = Character.toTitleCase(this)
 @kotlin.internal.InlineOnly
 public fun Char.titlecase(): String {
     return titlecaseChar().let { if (it != uppercaseChar()) it.toString() else uppercase() }
+}
+
+/**
+ * Converts this character to title case using Unicode mapping rules of the specified [locale].
+ *
+ * If this character has no mapping equivalent, the result of calling [uppercase] is returned.
+ *
+ * @sample samples.text.Chars.titlecase
+ */
+@SinceKotlin("1.4")
+@ExperimentalStdlibApi
+@kotlin.internal.InlineOnly
+public fun Char.titlecase(locale: Locale): String {
+    return titlecaseChar().let { if (it != uppercaseChar()) it.toString() else uppercase(locale) }
 }
 
 /**

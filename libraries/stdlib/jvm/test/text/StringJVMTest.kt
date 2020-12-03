@@ -100,18 +100,7 @@ class StringJVMTest {
     @Test fun capitalizeLocale() {
         fun testCapitalizeLocale(expected: String, string: String, locale: Locale) {
             assertEquals(expected, string.capitalize(locale))
-            assertEquals(expected, string.replaceFirstChar {
-                if (it.isLowerCase()) {
-                    val titleChar = it.titlecaseChar()
-                    if (titleChar != it.uppercaseChar()) {
-                        titleChar.toString()
-                    } else {
-                        it.toString().uppercase(locale)
-                    }
-                } else {
-                    it.toString()
-                }
-            })
+            assertEquals(expected, string.replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() })
         }
         testCapitalizeLocale("ABC", "ABC", Locale.US)
         testCapitalizeLocale("Abc", "Abc", Locale.US)
@@ -132,7 +121,7 @@ class StringJVMTest {
     @Test fun decapitalizeLocale() {
         fun testDecapitalizeLocale(expected: String, string: String, locale: Locale) {
             assertEquals(expected, string.decapitalize(locale))
-            assertEquals(expected, string.replaceFirstChar { it.toString().lowercase(locale) })
+            assertEquals(expected, string.replaceFirstChar { it.lowercase(locale) })
         }
         testDecapitalizeLocale("aBC", "ABC", Locale.US)
         testDecapitalizeLocale("abc", "Abc", Locale.US)
