@@ -75,7 +75,7 @@ public inline fun Char.toLowerCase(): Char = lowercaseChar()
 /**
  * Converts this character to lower case using Unicode mapping rules of the invariant locale.
  *
- * This function performs one-to-one character mapping using case mapping information from the UnicodeData file,
+ * This function performs one-to-one character mapping using case mapping information from the UnicodeData.txt file,
  * to support one-to-many character mapping use the [lowercase] function.
  * If this character has no mapping equivalent, the character itself is returned.
  *
@@ -106,7 +106,7 @@ public inline fun Char.toUpperCase(): Char = uppercaseChar()
 /**
  * Converts this character to upper case using Unicode mapping rules of the invariant locale.
  *
- * This function performs one-to-one character mapping using case mapping information from the UnicodeData file,
+ * This function performs one-to-one character mapping using case mapping information from the UnicodeData.txt file,
  * to support one-to-many character mapping use the [uppercase] function.
  * If this character has no mapping equivalent, the character itself is returned.
  *
