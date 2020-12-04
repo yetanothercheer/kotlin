@@ -5,6 +5,10 @@
 
 package org.jetbrains.kotlin.descriptors.commonizer.cli
 
+import org.jetbrains.kotlin.descriptors.commonizer.*
+import org.jetbrains.kotlin.descriptors.commonizer.KonanDistribution
+import org.jetbrains.kotlin.descriptors.commonizer.KonanDistributionRepository
+import org.jetbrains.kotlin.descriptors.commonizer.Repository
 import org.jetbrains.kotlin.descriptors.commonizer.konan.NativeDistributionCommonizer
 import org.jetbrains.kotlin.descriptors.commonizer.konan.NativeDistributionCommonizer.StatsType
 import org.jetbrains.kotlin.konan.library.KONAN_DISTRIBUTION_KLIB_DIR
@@ -39,26 +43,27 @@ internal class NativeDistributionCommonize(options: Collection<Option<*>>) : Tas
     override val category get() = Category.COMMONIZATION
 
     override fun execute(logPrefix: String) {
-        val distribution = getMandatory<File, NativeDistributionOptionType>()
+        val distribution = KonanDistribution(getMandatory<File, NativeDistributionOptionType>())
         val destination = getMandatory<File, OutputOptionType>()
         val targets = getMandatory<List<KonanTarget>, NativeTargetsOptionType>()
-
-        val copyStdlib = getOptional<Boolean, BooleanOptionType> { it == "copy-stdlib" } ?: false
-        val copyEndorsedLibs = getOptional<Boolean, BooleanOptionType> { it == "copy-endorsed-libs" } ?: false
         val statsType = getOptional<StatsType, StatsTypeOptionType> { it == "log-stats" } ?: StatsType.NONE
-
         val targetNames = targets.joinToString { "[${it.name}]" }
-        val descriptionSuffix = estimateLibrariesCount(distribution, targets)?.let { " ($it items)" } ?: ""
-        val description = "${logPrefix}Preparing commonized Kotlin/Native libraries for targets $targetNames$descriptionSuffix"
+        val additionalLibraries = getOptional<List<File>, AdditionalLibrariesOptionType>().orEmpty()
 
+        val repository = KonanDistributionRepository(distribution) + hackyRepository(additionalLibraries)
+
+        val descriptionSuffix = estimateLibrariesCount(repository, targets).let { " ($it items)" }
+        val description = "${logPrefix}Preparing commonized Kotlin/Native libraries for targets $targetNames$descriptionSuffix"
         println(description)
+        if (additionalLibraries.isNotEmpty()) {
+            println("Also commonizing for: $additionalLibraries")
+        }
 
         NativeDistributionCommonizer(
-            repository = distribution,
+            konanDistribution = distribution,
+            repository = repository,
             targets = targets,
             destination = destination,
-            copyStdlib = copyStdlib,
-            copyEndorsedLibs = copyEndorsedLibs,
             statsType = statsType,
             logger = CliLoggerAdapter(2)
         ).run()
@@ -67,15 +72,22 @@ internal class NativeDistributionCommonize(options: Collection<Option<*>>) : Tas
     }
 
     companion object {
-        private fun estimateLibrariesCount(distribution: File, targets: List<KonanTarget>): Int? {
-            val targetNames = targets.map { it.name }
-            return distribution.resolve(KONAN_DISTRIBUTION_KLIB_DIR)
-                .resolve(KONAN_DISTRIBUTION_PLATFORM_LIBS_DIR)
-                .listFiles()
-                ?.filter { it.name in targetNames }
-                ?.mapNotNull { it.listFiles() }
-                ?.flatMap { it.toList() }
-                ?.size
+        private fun estimateLibrariesCount(repository: Repository, targets: List<KonanTarget>): Int {
+            return targets.flatMap { repository.getLibraries(LeafTarget(it.name, it)) }.count()
         }
+    }
+}
+
+
+private fun hackyRepository(additionalFiles: List<File>): Repository {
+    return object : Repository {
+        override fun getLibraries(target: LeafTarget): List<File> {
+            return when {
+                target.name.contains("linux", true) -> additionalFiles.filter { it.absolutePath.contains("linux", true) }
+                target.name.contains("macos", true) -> additionalFiles.filter { it.absolutePath.contains("macos", true) }
+                else -> emptyList()
+            }
+        }
+
     }
 }

@@ -35,12 +35,11 @@ import org.jetbrains.kotlin.util.Logger
 import java.io.File
 import org.jetbrains.kotlin.konan.file.File as KFile
 
-class NativeDistributionCommonizer(
-    private val repository: File,
+class NativeDistributionCommonizer internal constructor(
+    private val konanDistribution: KonanDistribution,
+    private val repository: Repository,
     private val targets: List<KonanTarget>,
     private val destination: File,
-    private val copyStdlib: Boolean,
-    private val copyEndorsedLibs: Boolean,
     private val statsType: StatsType,
     private val logger: Logger
 ) {
@@ -67,9 +66,6 @@ class NativeDistributionCommonizer(
     }
 
     private fun checkPreconditions() {
-        if (!repository.isDirectory)
-            logger.fatal("Repository does not exist: $repository")
-
         when (targets.size) {
             0 -> logger.fatal("No targets specified")
             1 -> logger.fatal("Too few targets specified: $targets")
@@ -87,18 +83,14 @@ class NativeDistributionCommonizer(
     private fun logTotal() = logger.log("TOTAL: ${clockMark.elapsedSinceStart()}")
 
     private fun loadLibraries(): AllNativeLibraries {
-        val stdlibPath = repository.resolve(konanCommonLibraryPath(KONAN_STDLIB_NAME))
-        val stdlib = NativeLibrary(loadLibrary(stdlibPath))
+        val stdlib = NativeLibrary(loadLibrary(konanDistribution.stdlib))
 
         val librariesByTargets = targets.associate { target ->
             val leafTarget = LeafTarget(target.name, target)
 
-            val platformLibs = leafTarget.platformLibrariesSource
-                .takeIf { it.isDirectory }
-                ?.listFiles()
-                ?.takeIf { it.isNotEmpty() }
-                ?.map { NativeLibrary(loadLibrary(it)) }
-                .orEmpty()
+            val platformLibs = repository.getLibraries(leafTarget)
+                .map(::loadLibrary)
+                .map(::NativeLibrary)
 
             if (platformLibs.isEmpty())
                 logger.warning("No platform libraries found for target $target. This target will be excluded from commonization.")
@@ -112,8 +104,11 @@ class NativeDistributionCommonizer(
     }
 
     private fun loadLibrary(location: File): KotlinLibrary {
+        /*
         if (!location.isDirectory)
             logger.fatal("Library not found: $location")
+
+         */
 
         val library = resolveSingleFileKlib(
             libraryFile = KFile(location.path),
@@ -173,8 +168,6 @@ class NativeDistributionCommonizer(
     private fun saveModules(originalLibraries: AllNativeLibraries, result: Result) {
         // optimization: stdlib and endorsed libraries effectively remain the same across all Kotlin/Native targets,
         // so they can be just copied to the new destination without running serializer
-        copyCommonStandardLibraries()
-
         when (result) {
             is Result.NothingToCommonize -> {
                 // It may happen that all targets to be commonized (or at least all but one target) miss platform libraries.
@@ -231,6 +224,7 @@ class NativeDistributionCommonizer(
     }
 
     private fun copyCommonStandardLibraries() {
+        /*
         if (copyStdlib || copyEndorsedLibs) {
             repository.resolve(KONAN_DISTRIBUTION_KLIB_DIR)
                 .resolve(KONAN_DISTRIBUTION_COMMON_LIBS_DIR)
@@ -253,9 +247,14 @@ class NativeDistributionCommonizer(
 
             logProgress("Copied $what")
         }
+
+         */
+        TODO()
     }
 
+
     private fun copyTargetAsIs(leafTarget: LeafTarget, librariesCount: Int) {
+        /*
         val librariesDestination = leafTarget.librariesDestination
         librariesDestination.mkdirs() // always create an empty directory even if there is nothing to copy
 
@@ -263,6 +262,9 @@ class NativeDistributionCommonizer(
         if (librariesSource.isDirectory) librariesSource.copyRecursively(librariesDestination)
 
         logProgress("Copied $librariesCount libraries for [${leafTarget.name}]")
+
+         */
+        TODO()
     }
 
     private fun serializeTarget(
@@ -318,10 +320,6 @@ class NativeDistributionCommonizer(
         library.commit()
     }
 
-    private val LeafTarget.platformLibrariesSource: File
-        get() = repository.resolve(KONAN_DISTRIBUTION_KLIB_DIR)
-            .resolve(KONAN_DISTRIBUTION_PLATFORM_LIBS_DIR)
-            .resolve(name)
 
     private val Target.librariesDestination: File
         get() = when (this) {

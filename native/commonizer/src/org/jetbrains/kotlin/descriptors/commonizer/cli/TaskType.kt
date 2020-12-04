@@ -28,7 +28,8 @@ internal enum class TaskType(
                 "Boolean (default false);\nwhether to copy Kotlin/Native endorsed libraries to the destination",
                 mandatory = false
             ),
-            StatsTypeOptionType
+            StatsTypeOptionType,
+            AdditionalLibrariesOptionType,
         ),
         ::NativeDistributionCommonize
     ),

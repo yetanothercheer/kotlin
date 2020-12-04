@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.descriptors.commonizer.utils.declarationDescriptor
 import org.jetbrains.kotlin.descriptors.commonizer.utils.extractExpandedType
 import org.jetbrains.kotlin.descriptors.commonizer.utils.internedClassId
 import org.jetbrains.kotlin.name.ClassId
+import org.jetbrains.kotlin.resolve.descriptorUtil.classId
 import org.jetbrains.kotlin.types.*
 
 object CirTypeFactory {
@@ -41,6 +42,14 @@ object CirTypeFactory {
                         isMarkedNullable = abbreviation.isMarkedNullable
                     )
                 }
+                is NotFoundClasses.MockClassDescriptor ->
+                    return createClassType(
+                        classId = classifierDescriptor.internedClassId,
+                        outerType = null,
+                        visibility = classifierDescriptor.visibility,
+                        isMarkedNullable = abbreviation.isMarkedNullable,
+                        arguments = createArguments(abbreviation.arguments, useAbbreviation = true)
+                    )
                 else -> error("Unexpected classifier descriptor type for abbreviation type: ${classifierDescriptor::class.java}, $classifierDescriptor, ${source.abbreviation}")
             }
         }

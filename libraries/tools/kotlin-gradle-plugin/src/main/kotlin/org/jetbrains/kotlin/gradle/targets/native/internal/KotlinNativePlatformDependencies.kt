@@ -6,8 +6,11 @@
 package org.jetbrains.kotlin.gradle.targets.native.internal
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.FileCollectionDependency
 import org.gradle.api.file.FileCollection
 import org.jetbrains.kotlin.compilerRunner.konanHome
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.dsl.multiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.multiplatformExtensionOrNull
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -100,6 +103,19 @@ private class NativePlatformDependencyResolver(val project: Project, val kotlinV
         dependencies.computeIfAbsent(dependency) { mutableListOf() }.add(whenResolved)
     }
 
+    // Very hacky 🤷‍
+    private fun additionalLibraries(): List<File> {
+        return project.configurations
+            .filter { it.isCanBeResolved }
+            .flatMap { it.allDependencies }
+            .toList()
+            .filterIsInstance<FileCollectionDependency>()
+            .flatMap { it.files }
+            .filter { it.extension == "klib" }
+            .filter { it.name != project.name + ".klib" }
+            .distinct()
+    }
+
     fun resolveAll() {
         check(!alreadyResolved)
         alreadyResolved = true
@@ -107,11 +123,17 @@ private class NativePlatformDependencyResolver(val project: Project, val kotlinV
         val targetGroups: List<CommonizedCommon> = dependencies.keys.filterIsInstance<CommonizedCommon>()
 
         val commonizerTaskParams = CommonizerTaskParams.build(
-            kotlinVersion,
-            targetGroups.map { it.targets },
-            distributionDir,
-            distributionDir.resolve(KONAN_DISTRIBUTION_KLIB_DIR).resolve(KONAN_DISTRIBUTION_COMMONIZED_LIBS_DIR)
-        )
+            kotlinVersion = kotlinVersion,
+            targetGroups = targetGroups.map { it.targets },
+            distributionDir = distributionDir,
+            baseDestinationDir = distributionDir.resolve(KONAN_DISTRIBUTION_KLIB_DIR).resolve(KONAN_DISTRIBUTION_COMMONIZED_LIBS_DIR)
+        ).also {
+            // TODO NOW: Just for debugging!
+            if (it.commandLineArguments.isNotEmpty()) {
+                it.commandLineArguments += "-additional-libraries"
+                it.commandLineArguments += additionalLibraries().joinToString(";") { it.absolutePath }
+            }
+        }
 
         val commonizerTaskProvider = project.registerTask(
             COMMONIZER_TASK_NAME,
