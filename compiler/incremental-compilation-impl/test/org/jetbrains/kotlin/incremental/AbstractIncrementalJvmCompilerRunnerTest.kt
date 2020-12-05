@@ -74,6 +74,7 @@ abstract class AbstractIncrementalJvmCompilerRunnerTest : AbstractIncrementalCom
             moduleName = testDir.name
             destination = destinationDir.path
             classpath = compileClasspath
+            skipPrereleaseCheck = true
         }
 
     private val compileClasspath =
