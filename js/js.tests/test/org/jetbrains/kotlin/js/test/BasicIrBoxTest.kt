@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.js.test
 
+import org.jetbrains.kotlin.backend.common.phaser.AnyNamedPhase
 import org.jetbrains.kotlin.backend.common.phaser.PhaseConfig
 import org.jetbrains.kotlin.backend.common.phaser.toPhaseMap
 import org.jetbrains.kotlin.cli.common.messages.AnalyzerWithCompilerReport
@@ -120,8 +121,8 @@ abstract class BasicIrBoxTest(
                 PhaseConfig(
                     jsPhases,
                     dumpToDirectory = dumpOutputDir.path,
-                    toDumpStateAfter = allPhasesSet,
-                    toValidateStateAfter = allPhasesSet,
+                    toDumpStateAfter = fromSysPropertyOrAll("kotlin.js.test.phasesToDumpAfter", allPhasesSet),
+                    toValidateStateAfter = fromSysPropertyOrAll("kotlin.js.test.phasesToValidateAfter", allPhasesSet),
                     dumpOnlyFqName = null
                 )
             } else {
@@ -188,6 +189,13 @@ abstract class BasicIrBoxTest(
 
             compilationCache[outputFile.name.replace(".js", ".meta.js")] = actualOutputFile
         }
+    }
+
+    private fun fromSysPropertyOrAll(key: String, all: Set<AnyNamedPhase>): Set<AnyNamedPhase> {
+        val phases = System.getProperty(key)?.split(',')?.toSet() ?: emptySet()
+        if (phases.isEmpty()) return all
+
+        return all.filter { it.name in phases }.toSet()
     }
 
     private fun JsCode.writeTo(outputFile: File, config: JsConfig) {
