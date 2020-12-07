@@ -174,9 +174,6 @@ class NameTables(
             mappedNames = mappedNames
         )
 
-        // ???
-        mappedNames?.addAllIfAbsent(mappedNames)
-
         val classDeclaration = mutableListOf<IrClass>()
         for (p in packages) {
             for (declaration in p.declarations) {
