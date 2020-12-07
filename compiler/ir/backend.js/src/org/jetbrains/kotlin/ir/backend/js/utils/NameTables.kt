@@ -28,7 +28,7 @@ import java.util.*
 
 private fun <T> mapToKey(declaration: T): String {
     return with(JsManglerIr) {
-        if (declaration is IrDeclaration && isPublic(declaration)) {
+        if (declaration is IrDeclaration) {
             declaration.hashedMangle.toString()
         } else if (declaration is Signature) {
             declaration.toString().hashMangle.toString()
@@ -37,9 +37,6 @@ private fun <T> mapToKey(declaration: T): String {
         }
     }
 }
-
-private fun JsManglerIr.isPublic(declaration: IrDeclaration) =
-    declaration.isExported() && declaration !is IrScript && declaration !is IrVariable && declaration !is IrValueParameter
 
 class NameTable<T>(
     val parent: NameTable<*>? = null,
