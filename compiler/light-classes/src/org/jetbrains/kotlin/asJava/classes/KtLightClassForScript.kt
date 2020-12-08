@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.asJava.classes
 
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Key
 import com.intellij.psi.*
 import com.intellij.psi.impl.PsiSuperMethodImplUtil
@@ -123,7 +122,7 @@ open class KtLightClassForScript(val script: KtScript) : KtLazyLightClass(script
     override fun getNavigationElement() = script
 
     override fun isEquivalentTo(another: PsiElement?): Boolean =
-        another is PsiClass && Comparing.equal(another.qualifiedName, qualifiedName)
+        another is PsiClass && another.qualifiedName == qualifiedName
 
     override fun getElementIcon(flags: Int): Icon? = throw UnsupportedOperationException("This should be done by JetIconProvider")
 

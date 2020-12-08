@@ -17,9 +17,7 @@
 package org.jetbrains.kotlin.asJava.classes
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.psi.*
 import com.intellij.psi.impl.PsiSuperMethodImplUtil
 import com.intellij.psi.impl.java.stubs.PsiJavaFileStub
@@ -190,9 +188,8 @@ open class KtLightClassForFacade constructor(
 
     override fun getNavigationElement() = firstFileInFacade
 
-    override fun isEquivalentTo(another: PsiElement?): Boolean {
-        return another is KtLightClassForFacade && Comparing.equal(another.qualifiedName, qualifiedName)
-    }
+    override fun isEquivalentTo(another: PsiElement?): Boolean =
+        another is KtLightClassForFacade && another.qualifiedName == qualifiedName
 
     override fun getElementIcon(flags: Int): Icon? = throw UnsupportedOperationException("This should be done by JetIconProvider")
 

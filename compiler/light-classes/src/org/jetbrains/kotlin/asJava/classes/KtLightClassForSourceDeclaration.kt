@@ -8,7 +8,6 @@ package org.jetbrains.kotlin.asJava.classes
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -152,10 +151,9 @@ abstract class KtLightClassForSourceDeclaration(
 
     override fun getNavigationElement(): PsiElement = classOrObject
 
-    override fun isEquivalentTo(another: PsiElement?): Boolean {
-        return kotlinOrigin.isEquivalentTo(another) ||
-                another is KtLightClassForSourceDeclaration && Comparing.equal(another.qualifiedName, qualifiedName)
-    }
+    override fun isEquivalentTo(another: PsiElement?): Boolean =
+        kotlinOrigin.isEquivalentTo(another) ||
+                another is KtLightClassForSourceDeclaration && another.qualifiedName == qualifiedName
 
     override fun getElementIcon(flags: Int): Icon? {
         throw UnsupportedOperationException("This should be done by JetIconProvider")
