@@ -568,6 +568,7 @@ sealed class ChangeInfo(val fqName: FqName) {
 
     class SignatureChanged(fqName: FqName, val areSubclassesAffected: Boolean) : ChangeInfo(fqName)
 
+    class ParentsChanged(fqName: FqName, val parentsChanged: Collection<FqName>) : ChangeInfo(fqName)
 
     protected open fun toStringProperties(): String = "fqName = $fqName"
 

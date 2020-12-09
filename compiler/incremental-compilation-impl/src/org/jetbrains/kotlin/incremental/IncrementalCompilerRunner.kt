@@ -310,7 +310,7 @@ abstract class IncrementalCompilerRunner<
             }
             if (compilationMode is CompilationMode.Rebuild) break
 
-            val (dirtyLookupSymbols, dirtyClassFqNames) = changesCollector.getDirtyData(listOf(caches.platformCache), reporter)
+            val (dirtyLookupSymbols, dirtyClassFqNames, forceRecompile) = changesCollector.getDirtyData(listOf(caches.platformCache), reporter)
             val compiledInThisIterationSet = sourcesToCompile.toHashSet()
 
             with(dirtySources) {
@@ -322,6 +322,13 @@ abstract class IncrementalCompilerRunner<
                         dirtyClassFqNames,
                         reporter,
                         excludes = compiledInThisIterationSet
+                    )
+                )
+                addAll(
+                    mapClassesFqNamesToFiles(
+                        listOf(caches.platformCache),
+                        forceRecompile,
+                        reporter
                     )
                 )
             }
