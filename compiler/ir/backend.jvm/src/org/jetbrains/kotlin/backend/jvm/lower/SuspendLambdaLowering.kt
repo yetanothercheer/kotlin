@@ -144,7 +144,6 @@ private class SuspendLambdaLowering(context: JvmBackendContext) : SuspendLowerin
             }
         }
 
-    @OptIn(ObsoleteDescriptorBasedAPI::class)
     private fun generateContinuationClassForLambda(reference: IrFunctionReference, parent: IrDeclarationParent): IrClass =
         context.irFactory.buildClass {
             name = SpecialNames.NO_NAME_PROVIDED
