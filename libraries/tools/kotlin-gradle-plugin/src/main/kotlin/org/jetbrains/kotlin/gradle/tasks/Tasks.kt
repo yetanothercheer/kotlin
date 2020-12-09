@@ -638,6 +638,17 @@ open class Kotlin2JsCompile : AbstractKotlinCompile<K2JSCompilerArguments>(), Ko
     val outputFile: File
         get() = outputFilePath?.let(::File) ?: defaultOutputFile
 
+    @get:OutputFile
+    @get:Optional
+    val outputFile2: File?
+        get() = (outputFilePath?.let(::File) ?: defaultOutputFile).let { file ->
+            if (file.isFile) {
+                file
+            } else {
+                null
+            }
+        }
+
     @get:Input
     val outputFilePath: String?
         get() = kotlinOptions.outputFile
