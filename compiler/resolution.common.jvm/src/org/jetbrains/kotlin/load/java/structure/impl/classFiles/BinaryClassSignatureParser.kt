@@ -16,7 +16,7 @@
 
 package org.jetbrains.kotlin.load.java.structure.impl.classFiles
 
-import com.intellij.util.containers.StringInterner
+import com.intellij.util.containers.Interner
 import org.jetbrains.kotlin.builtins.PrimitiveType
 import org.jetbrains.kotlin.load.java.structure.JavaClassifierType
 import org.jetbrains.kotlin.load.java.structure.JavaType
@@ -37,7 +37,7 @@ import java.text.StringCharacterIterator
  */
 class BinaryClassSignatureParser {
 
-    private val canonicalNameInterner = StringInterner()
+    private val canonicalNameInterner = Interner.createStringInterner<String>()
 
     fun parseTypeParametersDeclaration(signature: CharacterIterator, context: ClassifierResolutionContext): List<JavaTypeParameter> {
         if (signature.current() != '<') {
@@ -83,7 +83,7 @@ class BinaryClassSignatureParser {
         }
     }
 
-    private fun parseTypeVariableRefSignature(signature: CharacterIterator, context: ClassifierResolutionContext): JavaClassifierType? {
+    private fun parseTypeVariableRefSignature(signature: CharacterIterator, context: ClassifierResolutionContext): JavaClassifierType {
         val id = StringBuilder()
 
         signature.next()
