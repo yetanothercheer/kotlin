@@ -13,10 +13,10 @@ import com.intellij.openapi.module.Module
 import org.jetbrains.kotlin.config.KotlinFacetSettingsProvider
 import org.jetbrains.kotlin.idea.caches.project.isMPPModule
 import org.jetbrains.kotlin.idea.configuration.KotlinTargetData
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestTasksProvider
 import org.jetbrains.plugins.gradle.service.project.GradleProjectResolverUtil
 import org.jetbrains.plugins.gradle.util.GradleConstants
-import java.util.*
 
 class KotlinMPPGradleTestTasksProvider : GradleTestTasksProvider {
     private companion object {
@@ -58,6 +58,6 @@ class KotlinMPPGradleTestTasksProvider : GradleTestTasksProvider {
 
     private fun getTaskNames(task: TaskData, namePrefix: String): List<String> {
         val name = task.name
-        return listOf(namePrefix + CLEAN_NAME_PREFIX + name.capitalize(Locale.US), namePrefix + name)
+        return listOf(namePrefix + CLEAN_NAME_PREFIX + name.capitalizeAsciiOnly(), namePrefix + name)
     }
 }

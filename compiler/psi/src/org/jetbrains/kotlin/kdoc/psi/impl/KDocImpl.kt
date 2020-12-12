@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
-import java.util.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 
 class KDocImpl(buffer: CharSequence?) : LazyParseablePsiElement(KDocTokens.KDOC, buffer), KDoc {
 
@@ -38,10 +38,10 @@ class KDocImpl(buffer: CharSequence?) : LazyParseablePsiElement(KDocTokens.KDOC,
         getChildrenOfType<KDocSection>().firstOrNull { it.name == name }
 
     override fun findSectionByTag(tag: KDocKnownTag): KDocSection? =
-        findSectionByName(tag.name.toLowerCase(Locale.US))
+        findSectionByName(tag.name.toLowerCaseAsciiOnly())
 
     override fun findSectionByTag(tag: KDocKnownTag, subjectName: String): KDocSection? =
         getChildrenOfType<KDocSection>().firstOrNull {
-            it.name == tag.name.toLowerCase(Locale.US) && it.getSubjectName() == subjectName
+            it.name == tag.name.toLowerCaseAsciiOnly() && it.getSubjectName() == subjectName
         }
 }

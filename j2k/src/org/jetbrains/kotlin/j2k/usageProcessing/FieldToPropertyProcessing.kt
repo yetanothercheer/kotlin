@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.j2k.AccessorKind
 import org.jetbrains.kotlin.j2k.CodeConverter
 import org.jetbrains.kotlin.j2k.ast.*
 import org.jetbrains.kotlin.j2k.dot
-import java.util.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 class FieldToPropertyProcessing(
         private val field: PsiField,
@@ -168,5 +168,5 @@ class UseAccessorsJavaCodeProcessor(private val factory: PsiElementFactory, priv
     }
 
     private fun accessorName(kind: AccessorKind) =
-        (if (kind == AccessorKind.GETTER) "get" else "set") + propertyName.capitalize(Locale.US)
+        (if (kind == AccessorKind.GETTER) "get" else "set") + propertyName.capitalizeAsciiOnly()
 }

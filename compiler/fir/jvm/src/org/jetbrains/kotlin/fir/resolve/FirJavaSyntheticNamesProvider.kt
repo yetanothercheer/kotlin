@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.load.java.propertyNameByGetMethodName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeFirstWord
-import java.util.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
 
 @NoMutableState
 object FirJavaSyntheticNamesProvider : FirSyntheticNamesProvider() {
@@ -62,7 +62,7 @@ object FirJavaSyntheticNamesProvider : FirSyntheticNamesProvider() {
             else -> return emptyList()
         }
         val withoutPrefix = identifier.removePrefix(prefix)
-        val withoutPrefixName = Name.identifier(withoutPrefix.decapitalize(Locale.US))
+        val withoutPrefixName = Name.identifier(withoutPrefix.decapitalizeAsciiOnly())
         return if (prefix == SETTER_PREFIX) {
             listOf(withoutPrefixName, Name.identifier(IS_PREFIX + withoutPrefix))
         } else {

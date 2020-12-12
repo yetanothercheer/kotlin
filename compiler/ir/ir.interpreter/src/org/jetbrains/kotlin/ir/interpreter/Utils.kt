@@ -22,8 +22,8 @@ import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-import java.util.*
 
 internal fun IrFunction.getDispatchReceiver(): IrValueParameterSymbol? = this.dispatchReceiverParameter?.symbol
 
@@ -206,7 +206,7 @@ internal fun State?.getCorrectReceiverByFunction(irFunction: IrFunction): State?
     return generateSequence(original) { it.superClass }.firstOrNull { it.irClass.thisReceiver == other } ?: this
 }
 
-internal fun IrFunction.getCapitalizedFileName() = this.file.name.replace(".kt", "Kt").capitalize(Locale.US)
+internal fun IrFunction.getCapitalizedFileName() = this.file.name.replace(".kt", "Kt").capitalizeAsciiOnly()
 
 internal fun IrType.isUnsigned() = this.isUByte() || this.isUShort() || this.isUInt() || this.isULong()
 
