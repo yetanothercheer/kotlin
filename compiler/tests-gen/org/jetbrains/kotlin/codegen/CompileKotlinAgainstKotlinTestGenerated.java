@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.codegen;
 import com.intellij.testFramework.TestDataPath;
 import org.jetbrains.kotlin.test.JUnit3RunnerWithInners;
 import org.jetbrains.kotlin.test.KotlinTestUtils;
+import org.jetbrains.kotlin.test.util.KtTestUtil;
 import org.jetbrains.kotlin.test.TestMetadata;
 import org.junit.runner.RunWith;
 
@@ -25,7 +26,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
     }
 
     public void testAllFilesPresentInCompileKotlinAgainstKotlin() throws Exception {
-        KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin"), Pattern.compile("^(.+)\\.kt$"), null, true);
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin"), Pattern.compile("^(.+)\\.kt$"), null, true);
     }
 
     @TestMetadata("annotationInInterface.kt")
@@ -407,7 +408,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
         }
 
         public void testAllFilesPresentInFir() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/fir"), Pattern.compile("^(.+)\\.kt$"), null, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/fir"), Pattern.compile("^(.+)\\.kt$"), null, true);
         }
 
         @TestMetadata("AnonymousObjectInProperty.kt")
@@ -435,7 +436,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
         }
 
         public void testAllFilesPresentInJvm8() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8"), Pattern.compile("^(.+)\\.kt$"), null, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8"), Pattern.compile("^(.+)\\.kt$"), null, true);
         }
 
         @TestMetadata("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults")
@@ -447,7 +448,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
             }
 
             public void testAllFilesPresentInDefaults() throws Exception {
-                KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults"), Pattern.compile("^(.+)\\.kt$"), null, true);
             }
 
             @TestMetadata("superCall.kt")
@@ -489,7 +490,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
                 }
 
                 public void testAllFilesPresentInAllCompatibility() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility"), Pattern.compile("^(.+)\\.kt$"), null, true);
                 }
 
                 @TestMetadata("callStackTrace.kt")
@@ -536,7 +537,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
                     }
 
                     public void testAllFilesPresentInDelegationBy() throws Exception {
-                        KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility/delegationBy"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility/delegationBy"), Pattern.compile("^(.+)\\.kt$"), null, true);
                     }
 
                     @TestMetadata("simple.kt")
@@ -560,7 +561,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
                 }
 
                 public void testAllFilesPresentInInterop() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/interop"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/interop"), Pattern.compile("^(.+)\\.kt$"), null, true);
                 }
 
                 @TestMetadata("likeMemberClash.kt")
@@ -609,7 +610,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
             }
 
             public void testAllFilesPresentInJvm8against6() throws Exception {
-                KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6"), Pattern.compile("^(.+)\\.kt$"), null, true);
             }
 
             @TestMetadata("jdk8Against6.kt")
@@ -651,7 +652,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
                 }
 
                 public void testAllFilesPresentInDelegation() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6/delegation"), Pattern.compile("^(.+)\\.kt$"), null, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6/delegation"), Pattern.compile("^(.+)\\.kt$"), null, true);
                 }
 
                 @TestMetadata("diamond.kt")
@@ -681,7 +682,7 @@ public class CompileKotlinAgainstKotlinTestGenerated extends AbstractCompileKotl
         }
 
         public void testAllFilesPresentInTypeAnnotations() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/typeAnnotations"), Pattern.compile("^(.+)\\.kt$"), null, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/typeAnnotations"), Pattern.compile("^(.+)\\.kt$"), null, true);
         }
 
         @TestMetadata("implicitReturn.kt")

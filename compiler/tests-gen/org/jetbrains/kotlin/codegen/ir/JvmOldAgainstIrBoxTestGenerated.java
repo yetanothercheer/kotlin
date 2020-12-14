@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.codegen.ir;
 import com.intellij.testFramework.TestDataPath;
 import org.jetbrains.kotlin.test.JUnit3RunnerWithInners;
 import org.jetbrains.kotlin.test.KotlinTestUtils;
+import org.jetbrains.kotlin.test.util.KtTestUtil;
 import org.jetbrains.kotlin.test.TargetBackend;
 import org.jetbrains.kotlin.test.TestMetadata;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
     }
 
     public void testAllFilesPresentInCompileKotlinAgainstKotlin() throws Exception {
-        KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
     }
 
     @TestMetadata("annotationInInterface.kt")
@@ -408,7 +409,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
         }
 
         public void testAllFilesPresentInFir() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/fir"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/fir"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
         }
 
         @TestMetadata("AnonymousObjectInProperty.kt")
@@ -436,7 +437,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
         }
 
         public void testAllFilesPresentInJvm8() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
         }
 
         @TestMetadata("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults")
@@ -448,7 +449,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
             }
 
             public void testAllFilesPresentInDefaults() throws Exception {
-                KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
             }
 
             @TestMetadata("superCall.kt")
@@ -490,7 +491,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
                 }
 
                 public void testAllFilesPresentInAllCompatibility() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
                 }
 
                 @TestMetadata("callStackTrace.kt")
@@ -537,7 +538,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
                     }
 
                     public void testAllFilesPresentInDelegationBy() throws Exception {
-                        KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility/delegationBy"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/allCompatibility/delegationBy"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
                     }
 
                     @TestMetadata("simple.kt")
@@ -561,7 +562,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
                 }
 
                 public void testAllFilesPresentInInterop() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/interop"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/defaults/interop"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
                 }
 
                 @TestMetadata("likeMemberClash.kt")
@@ -610,7 +611,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
             }
 
             public void testAllFilesPresentInJvm8against6() throws Exception {
-                KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
             }
 
             @TestMetadata("jdk8Against6.kt")
@@ -652,7 +653,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
                 }
 
                 public void testAllFilesPresentInDelegation() throws Exception {
-                    KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6/delegation"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+                    KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/jvm8/jvm8against6/delegation"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
                 }
 
                 @TestMetadata("diamond.kt")
@@ -682,7 +683,7 @@ public class JvmOldAgainstIrBoxTestGenerated extends AbstractJvmOldAgainstIrBoxT
         }
 
         public void testAllFilesPresentInTypeAnnotations() throws Exception {
-            KotlinTestUtils.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/typeAnnotations"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/compileKotlinAgainstKotlin/typeAnnotations"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JVM_MULTI_MODULE_OLD_AGAINST_IR, true);
         }
 
         @TestMetadata("implicitReturn.kt")
