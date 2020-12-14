@@ -75,14 +75,6 @@ fun main(args: Array<String>) {
                 model("diagnostics/nativeTests")
             }
 
-            testClass<AbstractDiagnosticsTestWithOldJvmBackend> {
-                model("diagnostics/testsWithJvmBackend", targetBackend = TargetBackend.JVM_OLD)
-            }
-
-            testClass<AbstractDiagnosticsTestWithJvmIrBackend> {
-                model("diagnostics/testsWithJvmBackend", targetBackend = TargetBackend.JVM_IR)
-            }
-
             testClass<AbstractMultiPlatformIntegrationTest> {
                 model("multiplatform", extension = null, recursive = true, excludeParentDirs = true)
             }

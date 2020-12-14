@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.test.directives
 
+import org.jetbrains.kotlin.test.backend.handlers.JvmBackendDiagnosticsHandler
 import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives.USE_JAVAC
 import org.jetbrains.kotlin.test.directives.model.SimpleDirectivesContainer
 
@@ -39,5 +40,13 @@ object DiagnosticsDirectives : SimpleDirectivesContainer() {
 
     val JAVAC_EXPECTED_FILE by directive(
         description = "Dump descriptors to .javac.txt file if $USE_JAVAC enabled"
+    )
+
+    val REPORT_JVM_DIAGNOSTICS_ON_FRONTEND by directive(
+        description = """
+            Collect additional jvm specific diagnostics on frontend
+            Note that this directive is not needed if ${JvmBackendDiagnosticsHandler::class} 
+              is enabled in test 
+        """.trimIndent()
     )
 }
