@@ -139,7 +139,7 @@ class KotlinMPPGradleModelBuilder : ModelBuilderService {
         dependencyResolver: DependencyResolver,
         project: Project,
         dependencyMapper: KotlinDependencyMapper
-    ): Collection<KotlinSourceSetImpl>? {
+    ): Map<String, KotlinSourceSetImpl>? {
         val kotlinExt = project.extensions.findByName("kotlin") ?: return null
         val getSourceSets = kotlinExt.javaClass.getMethodOrNull("getSourceSets") ?: return null
 
@@ -165,7 +165,7 @@ class KotlinMPPGradleModelBuilder : ModelBuilderService {
         val map = allSourceSets.map { it.name to it }.toMap()
         val dependsOnCache = HashMap<String, Set<String>>()
         return allSourceSets.map { sourceSet ->
-            KotlinSourceSetImpl(
+            sourceSet.name to KotlinSourceSetImpl(
                 sourceSet.name,
                 sourceSet.languageSettings,
                 sourceSet.sourceDirs,
@@ -175,7 +175,7 @@ class KotlinMPPGradleModelBuilder : ModelBuilderService {
                 sourceSet.actualPlatforms as KotlinPlatformContainerImpl,
                 sourceSet.isTestModule
             )
-        }
+        }.toMap()
     }
 
     private fun buildAndroidDeps(classLoader: ClassLoader, project: Project): Map<String, List<Any>>? {
