@@ -71,10 +71,6 @@ fun main(args: Array<String>) {
                 model("diagnostics/testsWithJsStdLibAndBackendCompilation")
             }
 
-            testClass<AbstractDiagnosticsNativeTest> {
-                model("diagnostics/nativeTests")
-            }
-
             testClass<AbstractMultiPlatformIntegrationTest> {
                 model("multiplatform", extension = null, recursive = true, excludeParentDirs = true)
             }
