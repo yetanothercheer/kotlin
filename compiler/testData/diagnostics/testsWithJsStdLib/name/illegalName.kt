@@ -20,6 +20,6 @@ val x: Int
     get()<!> = TODO("")
 
 fun box(x: dynamic) {
-    x.<!NAME_CONTAINS_ILLEGAL_CHARS!>`foo-bar`<!>()
-    x.<!NAME_CONTAINS_ILLEGAL_CHARS!>`ba-z`<!>
+    x.<!DEBUG_INFO_DYNAMIC, NAME_CONTAINS_ILLEGAL_CHARS!>`foo-bar`<!>()
+    x.<!DEBUG_INFO_DYNAMIC, NAME_CONTAINS_ILLEGAL_CHARS!>`ba-z`<!>
 }

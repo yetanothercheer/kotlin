@@ -1,6 +1,6 @@
 // !LANGUAGE: +NewInference
 
-fun String.toDouble(): Double = (+(this.asDynamic())).unsafeCast<Double>().also {
+fun String.toDouble(): Double = (<!DEBUG_INFO_DYNAMIC!>+<!>(this.asDynamic())).unsafeCast<Double>().also {
     if (it.isNaN() && !this.isNaN() || it == 0.0 && this.isBlank())
         TODO()
 }

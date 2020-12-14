@@ -1,7 +1,7 @@
 fun test(d: dynamic) {
-    d.foo(name = "name")
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(name = "name")
 
-    d.foo(1, name = "name")
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(1, name = "name")
 
-    d.foo(1, duplicate = "", <!ARGUMENT_PASSED_TWICE!>duplicate<!> = ""<!NO_VALUE_FOR_PARAMETER!>)<!>
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(1, duplicate = "", <!ARGUMENT_PASSED_TWICE!>duplicate<!> = ""<!NO_VALUE_FOR_PARAMETER!>)<!>
 }

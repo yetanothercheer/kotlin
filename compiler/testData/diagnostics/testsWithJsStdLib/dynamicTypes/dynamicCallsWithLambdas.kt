@@ -2,33 +2,33 @@
 // !CHECK_TYPE
 
 fun test(d: dynamic) {
-    d.foo {}
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> {}
 
-    d.foo { <!UNRESOLVED_REFERENCE!>it<!> }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { <!UNRESOLVED_REFERENCE!>it<!> }
 
-    d.foo { x -> }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { x -> }
 
-    d.foo { x: Int -> "" }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { x: Int -> "" }
 
-    d.foo { x, y -> "" }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { x, y -> "" }
 
-    d.foo { x: String, y: Int -> "" }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { x: String, y: Int -> "" }
 
-    d.foo { x, y: Int -> "" }
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!> { x, y: Int -> "" }
 
-    d.foo({})
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>({})
 
-    d.foo({ x -> })
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>({ x -> })
 
-    d.foo(checkSubtype<(Int) -> Unit>({ x -> }))
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(checkSubtype<(Int) -> Unit>({ x -> }))
 
-    d.foo(label@ { x -> })
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(label@ { x -> })
 
-    d.foo(label@ ({ x, y -> }))
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(label@ ({ x, y -> }))
 
-    d.foo((label@ ({ x, y: Int -> })))
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>((label@ ({ x, y: Int -> })))
 
-    d.foo(({ x -> }))
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>(({ x -> }))
 
-    d.foo((({ x -> })))
+    d.<!DEBUG_INFO_DYNAMIC!>foo<!>((({ x -> })))
 }

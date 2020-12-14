@@ -2,21 +2,21 @@
 
 external val x: dynamic
 
-var y: Any? by <!PROPERTY_DELEGATION_BY_DYNAMIC!>x<!>
+var y: Any? <!DEBUG_INFO_DYNAMIC, DEBUG_INFO_DYNAMIC, DEBUG_INFO_DYNAMIC!>by <!PROPERTY_DELEGATION_BY_DYNAMIC!>x<!><!>
 
 fun foo() {
     val a: Any by <!PROPERTY_DELEGATION_BY_DYNAMIC!>x<!>
 }
 
 class C {
-    val a: dynamic by <!PROPERTY_DELEGATION_BY_DYNAMIC!>x<!>
+    val a: dynamic <!DEBUG_INFO_DYNAMIC, DEBUG_INFO_DYNAMIC!>by <!PROPERTY_DELEGATION_BY_DYNAMIC!>x<!><!>
 }
 
 class A {
     operator fun provideDelegate(host: Any?, p: Any): dynamic = TODO("")
 }
 
-val z: Any? by <!PROPERTY_DELEGATION_BY_DYNAMIC!>A()<!>
+val z: Any? <!DEBUG_INFO_DYNAMIC!>by <!PROPERTY_DELEGATION_BY_DYNAMIC!>A()<!><!>
 
 class DynamicHandler {
     operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): dynamic = 23
