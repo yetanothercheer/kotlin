@@ -482,10 +482,14 @@ private object FakeOverrideBuilderForLowerings : FakeOverrideBuilderStrategy() {
     }
 }
 
+private val lockObject = Any()
+
 fun IrClass.addFakeOverrides(irBuiltIns: IrBuiltIns, implementedMembers: List<IrOverridableMember> = emptyList()) {
-    IrOverridingUtil(irBuiltIns, FakeOverrideBuilderForLowerings)
-        .buildFakeOverridesForClassUsingOverriddenSymbols(this, implementedMembers)
-        .forEach { addChild(it) }
+    synchronized(lockObject) {
+        IrOverridingUtil(irBuiltIns, FakeOverrideBuilderForLowerings)
+            .buildFakeOverridesForClassUsingOverriddenSymbols(this, implementedMembers)
+            .forEach { addChild(it) }
+    }
 }
 
 @OptIn(ObsoleteDescriptorBasedAPI::class)
