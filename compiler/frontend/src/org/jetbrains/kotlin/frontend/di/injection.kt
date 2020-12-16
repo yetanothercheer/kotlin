@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.container.useInstance
 import org.jetbrains.kotlin.context.ModuleContext
 import org.jetbrains.kotlin.contracts.ContractDeserializerImpl
 import org.jetbrains.kotlin.extensions.StorageComponentContainerContributor
+import org.jetbrains.kotlin.idea.MainFunctionDetector
 import org.jetbrains.kotlin.incremental.components.ExpectActualTracker
 import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.platform.TargetPlatform
@@ -143,6 +144,7 @@ fun createContainerForBodyResolve(
 
     useImpl<BodyResolver>()
     useInstance(moduleStructureOracle)
+    useImpl<MainFunctionDetector.Factory.Ordinary>()
 }
 
 fun createContainerForLazyBodyResolve(
@@ -153,10 +155,12 @@ fun createContainerForLazyBodyResolve(
     bodyResolveCache: BodyResolveCache,
     analyzerServices: PlatformDependentAnalyzerServices,
     languageVersionSettings: LanguageVersionSettings,
-    moduleStructureOracle: ModuleStructureOracle
+    moduleStructureOracle: ModuleStructureOracle,
+    mainFunctionDetectorFactory: MainFunctionDetector.Factory
 ): StorageComponentContainer = createContainer("LazyBodyResolve", analyzerServices) {
     configureModule(moduleContext, platform, analyzerServices, bindingTrace, languageVersionSettings)
 
+    useInstance(mainFunctionDetectorFactory)
     useInstance(kotlinCodeAnalyzer)
     useInstance(kotlinCodeAnalyzer.fileScopeProvider)
     useInstance(bodyResolveCache)
@@ -200,6 +204,8 @@ fun createContainerForLazyLocalClassifierAnalyzer(
     useImpl<DeclarationScopeProviderForLocalClassifierAnalyzer>()
     useImpl<LocalLazyDeclarationResolver>()
 
+    useImpl<MainFunctionDetector.Factory.Ordinary>()
+
     useInstance(statementFilter)
 }
 
@@ -217,6 +223,8 @@ fun createContainerForLazyResolve(
     configureStandardResolveComponents()
 
     useInstance(declarationProviderFactory)
+
+    useImpl<MainFunctionDetector.Factory.Ordinary>()
 
     targetEnvironment.configure(this)
 
